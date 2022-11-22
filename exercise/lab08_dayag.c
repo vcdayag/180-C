@@ -39,7 +39,7 @@ int main() {
         // check if the size is invalid, i.e. colA != rowB
         fscanf(fp, "%d", &testcases);
         for (int testcase = 0; testcase < testcases; testcase++) {
-			printf("Testcase #%d\n",testcase+1);
+            printf("Testcase #%d\n", testcase + 1);
             // read the matrix by repeated fscanf to an integer, then getchar until the matrix is filled or the end-of-file is reached
             fscanf(fp, "%d %d", &numRowA, &numColA);
             A = (int **)malloc(numRowA * sizeof(int *));
@@ -97,19 +97,19 @@ int main() {
             for (int i = 0; i < total; i++) {
                 pthread_join(tid[i], NULL);
             }
+            
             // manage the return values of the threads here
-
             // print the solution here
-			printf("\nResulting Matrix:\n");
+            printf("\nResulting Matrix:\n");
             for (int r = 0; r < numRowB; r++) {
                 for (int c = 0; c < numColB; c++) {
                     printf("%d ", arguments[r * numColB + c].ans);
                 }
                 printf("\n");
             }
-			printf("\n");
+            printf("\n");
         }
-		fclose(fp);
+        fclose(fp);
     } else {
         printf("File not found!\n");
     }
