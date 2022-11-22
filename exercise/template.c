@@ -17,7 +17,7 @@ void *doThis(void *argss) {
     args *temp = (args *)argss;
     temp->ans = 69;
     // printf("Hello from thread[%d] with bcol %d.\n", temp->Arow, temp->Bcol);
-    printf("%d\n", A[0][0]);
+    // printf("%d\n", A[0][0]);
     return NULL;
 }
 
@@ -48,7 +48,7 @@ int main() {
             }
         }
         // print Matrix A
-        printf("matrix \n");
+        printf("matrix A\n");
         for (int r = 0; r < numRowA; r++) {
             for (int c = 0; c < numColA; c++) {
                 printf("%d ", A[r][c]);
@@ -57,6 +57,22 @@ int main() {
         }
 
         // print Matrix B
+		fscanf(fp, "%d %d", &numRowB, &numColB);
+        B = (int **)malloc(numRowB * sizeof(int*));
+        for (int r = 0; r < numRowB; r++) {
+            B[r] = (int *)malloc(numColB * sizeof(int));
+            for (int c = 0; c < numColB; c++) {
+                fscanf(fp, "%d", &B[r][c]);
+            }
+        }
+
+		printf("matrix B\n");
+        for (int r = 0; r < numRowB; r++) {
+            for (int c = 0; c < numColB; c++) {
+                printf("%d ", B[r][c]);
+            }
+            printf("\n");
+        }
 
         // create your threads here. Pass to the thread the row of A and the column of B they need to check.
         tid = (pthread_t *)malloc(total * sizeof(pthread_t));
@@ -76,7 +92,6 @@ int main() {
         for (int i = 0; i < total; i++) {
             // printf("%d", arguments[i].ans);
         }
-		printf("%d ", A[0][0]);
     } else {
         printf("File not found!\n");
     }
