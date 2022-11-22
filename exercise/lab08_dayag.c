@@ -14,12 +14,9 @@ int numRowA, numRowB;
 int numColA, numColB;
 
 void *computeCellMultiplication(void *argss) {
-    args *temp = (args *)argss;
-    temp->ans = 0;
-    // printf("Hello from thread[%d] with bcol %d.\n", temp->Arow, temp->Bcol);
-    // printf("%d\n", A[0][0]);
+    args *argument = (args *)argss;
     for (int i = 0; i < numRowB; i++) {
-        temp->ans += A[temp->Arow][i] * B[i][temp->Bcol];
+        argument->ans += A[argument->Arow][i] * B[i][argument->Bcol];
     }
     return NULL;
 }
