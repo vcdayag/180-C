@@ -41,71 +41,73 @@ int main() {
         // you can use fscanf for reading the first and second lines
         // check if the size is invalid, i.e. colA != rowB
         fscanf(fp, "%d", &testcases);
-        // read the matrix by repeated fscanf to an integer, then getchar until the matrix is filled or the end-of-file is reached
-        fscanf(fp, "%d %d", &numRowA, &numColA);
-        A = (int **)malloc(numRowA * sizeof(int *));
-        for (int r = 0; r < numRowA; r++) {
-            A[r] = (int *)malloc(numColA * sizeof(int));
-            for (int c = 0; c < numColA; c++) {
-                fscanf(fp, "%d", &A[r][c]);
+        for (int testcase = 0; testcase < testcases; testcase++) {
+            // read the matrix by repeated fscanf to an integer, then getchar until the matrix is filled or the end-of-file is reached
+            fscanf(fp, "%d %d", &numRowA, &numColA);
+            A = (int **)malloc(numRowA * sizeof(int *));
+            for (int r = 0; r < numRowA; r++) {
+                A[r] = (int *)malloc(numColA * sizeof(int));
+                for (int c = 0; c < numColA; c++) {
+                    fscanf(fp, "%d", &A[r][c]);
+                }
             }
-        }
-        // print Matrix A
-        printf("matrix A\n");
-        for (int r = 0; r < numRowA; r++) {
-            for (int c = 0; c < numColA; c++) {
-                printf("%d ", A[r][c]);
+            // print Matrix A
+            printf("matrix A\n");
+            for (int r = 0; r < numRowA; r++) {
+                for (int c = 0; c < numColA; c++) {
+                    printf("%d ", A[r][c]);
+                }
+                printf("\n");
             }
-            printf("\n");
-        }
 
-        // print Matrix B
-        fscanf(fp, "%d %d", &numRowB, &numColB);
-        B = (int **)malloc(numRowB * sizeof(int *));
-        for (int r = 0; r < numRowB; r++) {
-            B[r] = (int *)malloc(numColB * sizeof(int));
-            for (int c = 0; c < numColB; c++) {
-                fscanf(fp, "%d", &B[r][c]);
+            // print Matrix B
+            fscanf(fp, "%d %d", &numRowB, &numColB);
+            B = (int **)malloc(numRowB * sizeof(int *));
+            for (int r = 0; r < numRowB; r++) {
+                B[r] = (int *)malloc(numColB * sizeof(int));
+                for (int c = 0; c < numColB; c++) {
+                    fscanf(fp, "%d", &B[r][c]);
+                }
             }
-        }
 
-        printf("matrix B\n");
-        for (int r = 0; r < numRowB; r++) {
-            for (int c = 0; c < numColB; c++) {
-                printf("%d ", B[r][c]);
+            printf("matrix B\n");
+            for (int r = 0; r < numRowB; r++) {
+                for (int c = 0; c < numColB; c++) {
+                    printf("%d ", B[r][c]);
+                }
+                printf("\n");
             }
-            printf("\n");
-        }
 
-		if(numColA != numRowB){
-			printf("Column of A is not equal to Row of B");
-			printf("Can't do matrix multiplication");
-			return 0;
-		}
-
-		// create your threads here. Pass to the thread the row of A and the column of B they need to check.
-        tid = (pthread_t *)malloc(numRowB * numColB * sizeof(pthread_t));
-        arguments = (args *)malloc(numRowB * numColB * sizeof(args));
-        for (int r = 0; r < numRowB; r++) {
-            for (int c = 0; c < numColB; c++) {
-                int i = r * numColB + c;
-                arguments[i].Arow = r;
-                arguments[i].Bcol = c;
-                pthread_create(&tid[i], NULL, computeCellMultiplication, (void *)&arguments[i]);
+            if (numColA != numRowB) {
+                printf("Column of A is not equal to Row of B");
+                printf("Can't do matrix multiplication");
+                return 0;
             }
-        }
-        // join your threads here
-        for (int i = 0; i < total; i++) {
-            pthread_join(tid[i], NULL);
-        }
-        // manage the return values of the threads here
 
-        // print the solution here
-        for (int r = 0; r < numRowB; r++) {
-            for (int c = 0; c < numColB; c++) {
-                printf("%d ", arguments[r * numColB + c].ans);
+            // create your threads here. Pass to the thread the row of A and the column of B they need to check.
+            tid = (pthread_t *)malloc(numRowB * numColB * sizeof(pthread_t));
+            arguments = (args *)malloc(numRowB * numColB * sizeof(args));
+            for (int r = 0; r < numRowB; r++) {
+                for (int c = 0; c < numColB; c++) {
+                    int i = r * numColB + c;
+                    arguments[i].Arow = r;
+                    arguments[i].Bcol = c;
+                    pthread_create(&tid[i], NULL, computeCellMultiplication, (void *)&arguments[i]);
+                }
             }
-            printf("\n");
+            // join your threads here
+            for (int i = 0; i < total; i++) {
+                pthread_join(tid[i], NULL);
+            }
+            // manage the return values of the threads here
+
+            // print the solution here
+            for (int r = 0; r < numRowB; r++) {
+                for (int c = 0; c < numColB; c++) {
+                    printf("%d ", arguments[r * numColB + c].ans);
+                }
+                printf("\n");
+            }
         }
     } else {
         printf("File not found!\n");
