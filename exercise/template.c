@@ -13,7 +13,7 @@ int **B;
 int numRowA, numRowB;
 int numColA, numColB;
 
-void *doThis(void *argss) {
+void *computeCellMultiplication(void *argss) {
     args *temp = (args *)argss;
     temp->ans = 0;
     // printf("Hello from thread[%d] with bcol %d.\n", temp->Arow, temp->Bcol);
@@ -77,7 +77,7 @@ int main() {
             printf("\n");
         }
 
-        // create your threads here. Pass to the thread the row of A and the column of B they need to check.
+		// create your threads here. Pass to the thread the row of A and the column of B they need to check.
         tid = (pthread_t *)malloc(numRowB * numColB * sizeof(pthread_t));
         arguments = (args *)malloc(numRowB * numColB * sizeof(args));
         for (int r = 0; r < numRowB; r++) {
@@ -85,7 +85,7 @@ int main() {
                 int i = r * numColB + c;
                 arguments[i].Arow = r;
                 arguments[i].Bcol = c;
-                pthread_create(&tid[i], NULL, doThis, (void *)&arguments[i]);
+                pthread_create(&tid[i], NULL, computeCellMultiplication, (void *)&arguments[i]);
             }
         }
         // join your threads here
