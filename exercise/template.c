@@ -15,9 +15,12 @@ int numColA, numColB;
 
 void *doThis(void *argss) {
     args *temp = (args *)argss;
-    temp->ans = 69;
+    temp->ans = 0;
     // printf("Hello from thread[%d] with bcol %d.\n", temp->Arow, temp->Bcol);
     // printf("%d\n", A[0][0]);
+    for (int i = 0; i < numRowB; i++) {
+        temp->ans += A[temp->Arow][i] * B[i][temp->Bcol];
+    }
     return NULL;
 }
 
@@ -79,17 +82,11 @@ int main() {
         arguments = (args *)malloc(numRowB * numColB * sizeof(args));
         for (int r = 0; r < numRowB; r++) {
             for (int c = 0; c < numColB; c++) {
-				int i = r * numColB + c;
+                int i = r * numColB + c;
                 arguments[i].Arow = r;
                 arguments[i].Bcol = c;
                 pthread_create(&tid[i], NULL, doThis, (void *)&arguments[i]);
             }
-            printf("\n");
-        }
-        for (int i = 0; i < total; i++) {
-            arguments[i].Arow = 1;
-            arguments[i].Bcol = 2;
-            pthread_create(&tid[i], NULL, doThis, (void *)&arguments[i]);
         }
         // join your threads here
         for (int i = 0; i < total; i++) {
@@ -98,8 +95,11 @@ int main() {
         // manage the return values of the threads here
 
         // print the solution here
-        for (int i = 0; i < total; i++) {
-            // printf("%d", arguments[i].ans);
+        for (int r = 0; r < numRowB; r++) {
+            for (int c = 0; c < numColB; c++) {
+                printf("%d ", arguments[r * numColB + c].ans);
+            }
+            printf("\n");
         }
     } else {
         printf("File not found!\n");
