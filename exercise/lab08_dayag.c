@@ -15,6 +15,7 @@ int numColA, numColB;
 
 void *computeCellMultiplication(void *argss) {
     args *argument = (args *)argss;
+    argument->ans = 0;
     for (int i = 0; i < numRowB; i++) {
         argument->ans += A[argument->Arow][i] * B[i][argument->Bcol];
     }
@@ -94,7 +95,7 @@ int main() {
                 }
             }
             // join your threads here
-            for (int i = 0; i < total; i++) {
+            for (int i = 0; i < numRowB*numColB; i++) {
                 pthread_join(tid[i], NULL);
             }
             
@@ -108,6 +109,10 @@ int main() {
                 printf("\n");
             }
             printf("\n");
+            free(A);
+            free(B);
+            free(arguments);
+            free(tid);
         }
         fclose(fp);
     } else {
