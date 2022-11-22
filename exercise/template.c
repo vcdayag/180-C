@@ -40,7 +40,7 @@ int main() {
         fscanf(fp, "%d", &testcases);
         // read the matrix by repeated fscanf to an integer, then getchar until the matrix is filled or the end-of-file is reached
         fscanf(fp, "%d %d", &numRowA, &numColA);
-        A = (int **)malloc(numRowA * sizeof(int*));
+        A = (int **)malloc(numRowA * sizeof(int *));
         for (int r = 0; r < numRowA; r++) {
             A[r] = (int *)malloc(numColA * sizeof(int));
             for (int c = 0; c < numColA; c++) {
@@ -57,8 +57,8 @@ int main() {
         }
 
         // print Matrix B
-		fscanf(fp, "%d %d", &numRowB, &numColB);
-        B = (int **)malloc(numRowB * sizeof(int*));
+        fscanf(fp, "%d %d", &numRowB, &numColB);
+        B = (int **)malloc(numRowB * sizeof(int *));
         for (int r = 0; r < numRowB; r++) {
             B[r] = (int *)malloc(numColB * sizeof(int));
             for (int c = 0; c < numColB; c++) {
@@ -66,7 +66,7 @@ int main() {
             }
         }
 
-		printf("matrix B\n");
+        printf("matrix B\n");
         for (int r = 0; r < numRowB; r++) {
             for (int c = 0; c < numColB; c++) {
                 printf("%d ", B[r][c]);
@@ -75,8 +75,17 @@ int main() {
         }
 
         // create your threads here. Pass to the thread the row of A and the column of B they need to check.
-        tid = (pthread_t *)malloc(total * sizeof(pthread_t));
-        arguments = (args *)malloc(total * sizeof(args));
+        tid = (pthread_t *)malloc(numRowB * numColB * sizeof(pthread_t));
+        arguments = (args *)malloc(numRowB * numColB * sizeof(args));
+        for (int r = 0; r < numRowB; r++) {
+            for (int c = 0; c < numColB; c++) {
+				int i = r * numColB + c;
+                arguments[i].Arow = r;
+                arguments[i].Bcol = c;
+                pthread_create(&tid[i], NULL, doThis, (void *)&arguments[i]);
+            }
+            printf("\n");
+        }
         for (int i = 0; i < total; i++) {
             arguments[i].Arow = 1;
             arguments[i].Bcol = 2;
