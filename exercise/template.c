@@ -109,6 +109,7 @@ int main() {
                 printf("\n");
             }
         }
+		fclose(fp);
     } else {
         printf("File not found!\n");
     }
