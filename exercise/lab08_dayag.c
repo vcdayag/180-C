@@ -26,11 +26,7 @@ int main() {
     args *arguments;  // dynamic number of arguments since the number of threads is unknown;
                       // pwede nyo tong gawing 2D array, mahihirapan lang kayo mag-loop
     pthread_t *tid;
-
-    int total = 10;
     int testcases;
-    int temp;
-
     FILE *fp;
 
     fp = fopen("matrix.in", "r");
