@@ -77,6 +77,12 @@ int main() {
             printf("\n");
         }
 
+		if(numColA != numRowB){
+			printf("Column of A is not equal to Row of B");
+			printf("Can't do matrix multiplication");
+			return 0;
+		}
+
 		// create your threads here. Pass to the thread the row of A and the column of B they need to check.
         tid = (pthread_t *)malloc(numRowB * numColB * sizeof(pthread_t));
         arguments = (args *)malloc(numRowB * numColB * sizeof(args));
