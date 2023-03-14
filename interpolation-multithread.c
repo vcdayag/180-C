@@ -131,4 +131,7 @@ int main(int argc, char *argv[])
     for (int i = 0; i < n; i++)
         free(MATRIX[i]);
     free(MATRIX);
+    // free tid and arguments
+    free(tid);
+    free(arguments);
 }
