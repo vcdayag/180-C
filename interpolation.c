@@ -41,11 +41,13 @@ void *terrain_iter(void *argss)
 
 int main(int argc, char *argv[])
 {
-    if (argc != 1)
+    if (argc != 2)
     {
         printf("Must input an integer.");
         return 0;
     }
+
+    printf("%d\n",atoi(argv[1]));
 
     args *arguments; // dynamic number of arguments since the number of threads is unknown;
                      // pwede nyo tong gawing 2D array, mahihirapan lang kayo mag-loop
