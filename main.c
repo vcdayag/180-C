@@ -6,7 +6,16 @@ typedef struct ARG {
     int Arow;
     int Bcol;
     int ans;
+} argsold;
+
+typedef struct ARG {
+    int n;
+    int rowStart;
+    int rowEnd;
+    int colStart;
+    int colEnd;
 } args;
+
 
 int **A;
 int **B;
@@ -14,7 +23,7 @@ int numRowA, numRowB;
 int numColA, numColB;
 
 void *computeCellMultiplication(void *argss) {
-    args *argument = (args *)argss;
+    argsold *argument = (argsold *)argss;
     argument->ans = 0;
     for (int i = 0; i < numRowB; i++) {
         argument->ans += A[argument->Arow][i] * B[i][argument->Bcol];
@@ -22,15 +31,25 @@ void *computeCellMultiplication(void *argss) {
     return NULL;
 }
 
+void *terrain_iter(void *argss) {
+    args *argument = (argsold *)argss;
+    for (int i = 0; i < numRowB; i++) {
+    }
+    return NULL;
+}
+
 int main() {
-    args *arguments;  // dynamic number of arguments since the number of threads is unknown;
+    argsold *arguments;  // dynamic number of arguments since the number of threads is unknown;
                       // pwede nyo tong gawing 2D array, mahihirapan lang kayo mag-loop
     pthread_t *tid;
     int testcases;
     FILE *fp;
 
     fp = fopen("matrix.in", "r");
-    if (fp != NULL) {
+    if (fp == NULL){
+        printf("File not found!\n");
+        return 0;
+    }
         // read file here
         // you can use fscanf for reading the first and second lines
         // check if the size is invalid, i.e. colA != rowB
@@ -81,7 +100,7 @@ int main() {
 
             // create your threads here. Pass to the thread the row of A and the column of B they need to check.
             tid = (pthread_t *)malloc(numRowB * numColB * sizeof(pthread_t));
-            arguments = (args *)malloc(numRowB * numColB * sizeof(args));
+            arguments = (argsold *)malloc(numRowB * numColB * sizeof(argsold));
             for (int r = 0; r < numRowB; r++) {
                 for (int c = 0; c < numColB; c++) {
                     int i = r * numColB + c;
@@ -111,7 +130,4 @@ int main() {
             free(tid);
         }
         fclose(fp);
-    } else {
-        printf("File not found!\n");
-    }
 }
