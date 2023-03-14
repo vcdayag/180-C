@@ -3,12 +3,6 @@
 #include <stdlib.h>  //for malloc
 
 typedef struct ARG {
-    int Arow;
-    int Bcol;
-    int ans;
-} argsold;
-
-typedef struct ARG {
     int n;
     int rowStart;
     int rowEnd;
@@ -22,34 +16,20 @@ int **B;
 int numRowA, numRowB;
 int numColA, numColB;
 
-void *computeCellMultiplication(void *argss) {
-    argsold *argument = (argsold *)argss;
-    argument->ans = 0;
-    for (int i = 0; i < numRowB; i++) {
-        argument->ans += A[argument->Arow][i] * B[i][argument->Bcol];
-    }
-    return NULL;
-}
-
 void *terrain_iter(void *argss) {
-    args *argument = (argsold *)argss;
+    args *argument = (args *)argss;
     for (int i = 0; i < numRowB; i++) {
     }
     return NULL;
 }
 
 int main() {
-    argsold *arguments;  // dynamic number of arguments since the number of threads is unknown;
+    args *arguments;  // dynamic number of arguments since the number of threads is unknown;
                       // pwede nyo tong gawing 2D array, mahihirapan lang kayo mag-loop
     pthread_t *tid;
     int testcases;
     FILE *fp;
 
-    fp = fopen("matrix.in", "r");
-    if (fp == NULL){
-        printf("File not found!\n");
-        return 0;
-    }
         // read file here
         // you can use fscanf for reading the first and second lines
         // check if the size is invalid, i.e. colA != rowB
@@ -100,13 +80,13 @@ int main() {
 
             // create your threads here. Pass to the thread the row of A and the column of B they need to check.
             tid = (pthread_t *)malloc(numRowB * numColB * sizeof(pthread_t));
-            arguments = (argsold *)malloc(numRowB * numColB * sizeof(argsold));
+            arguments = (args *)malloc(numRowB * numColB * sizeof(args));
             for (int r = 0; r < numRowB; r++) {
                 for (int c = 0; c < numColB; c++) {
                     int i = r * numColB + c;
-                    arguments[i].Arow = r;
-                    arguments[i].Bcol = c;
-                    pthread_create(&tid[i], NULL, computeCellMultiplication, (void *)&arguments[i]);
+                    // arguments[i].Arow = r;
+                    // arguments[i].Bcol = c;
+                    pthread_create(&tid[i], NULL, terrain_iter, (void *)&arguments[i]);
                 }
             }
             // join your threads here
@@ -116,18 +96,17 @@ int main() {
             
             // manage the return values of the threads here
             // print the solution here
-            printf("\nResulting Matrix:\n");
-            for (int r = 0; r < numRowB; r++) {
-                for (int c = 0; c < numColB; c++) {
-                    printf("%d ", arguments[r * numColB + c].ans);
-                }
-                printf("\n");
-            }
-            printf("\n");
+            // printf("\nResulting Matrix:\n");
+            // for (int r = 0; r < numRowB; r++) {
+            //     for (int c = 0; c < numColB; c++) {
+            //         printf("%d ", arguments[r * numColB + c].ans);
+            //     }
+            //     printf("\n");
+            // }
+            // printf("\n");
             free(A);
             free(B);
             free(arguments);
             free(tid);
         }
-        fclose(fp);
 }
