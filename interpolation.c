@@ -93,9 +93,9 @@ int main(int argc, char *argv[])
     terrain_iter(n);
     time_after = clock();
 
-    // printf("Time elapsed: %lf\n", (double)(time_after - time_before) / CLOCKS_PER_SEC);
+    printf("Time elapsed: %lf\n", (double)(time_after - time_before) / CLOCKS_PER_SEC);
 
-    printMatrix(n);
+    // printMatrix(n);
 
     free(MATRIX);
 }
