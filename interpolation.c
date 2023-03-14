@@ -24,7 +24,14 @@ void generateMatrix(int n)
         A[r] = (int *)malloc(numColA * sizeof(int));
         for (int c = 0; c < numColA; c++)
         {
-            A[r][c] = 1;
+            if (r % 10 && c % 10)
+            {
+                A[r][c] = rand() * 1001;
+            }
+            else
+            {
+                A[r][c] = 0;
+            }
         }
     }
     return;
@@ -33,6 +40,7 @@ void generateMatrix(int n)
 void *terrain_iter(void *argss)
 {
     args *arguments = (args *)argss;
+
     for (int i = 0; i < arguments->n; i++)
     {
     }
@@ -41,6 +49,9 @@ void *terrain_iter(void *argss)
 
 int main(int argc, char *argv[])
 {
+    args *arguments;
+    pthread_t *tid;
+
     if (argc != 2)
     {
         printf("Must input an integer.");
@@ -49,13 +60,9 @@ int main(int argc, char *argv[])
 
     n = atoi(argv[1]);
 
-    args *arguments; // dynamic number of arguments since the number of threads is unknown;
-                     // pwede nyo tong gawing 2D array, mahihirapan lang kayo mag-loop
-    pthread_t *tid;
-    
-    // create your threads here. Pass to the thread the row of A and the column of B they need to check.
     tid = (pthread_t *)malloc(n * n * sizeof(pthread_t));
     arguments = (args *)malloc(n * n * sizeof(args));
+
     for (int r = 0; r < n; r++)
     {
         for (int c = 0; c < n; c++)
