@@ -23,7 +23,12 @@ void *terrain_iter(void *argss) {
     return NULL;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+    if (argc != 1){
+        printf("Must input an integer.");
+        return 0;
+    }
+
     args *arguments;  // dynamic number of arguments since the number of threads is unknown;
                       // pwede nyo tong gawing 2D array, mahihirapan lang kayo mag-loop
     pthread_t *tid;
@@ -44,32 +49,6 @@ int main() {
                 for (int c = 0; c < numColA; c++) {
                     fscanf(fp, "%d", &A[r][c]);
                 }
-            }
-            // print Matrix A
-            printf("matrix A\n");
-            for (int r = 0; r < numRowA; r++) {
-                for (int c = 0; c < numColA; c++) {
-                    printf("%d ", A[r][c]);
-                }
-                printf("\n");
-            }
-
-            // print Matrix B
-            fscanf(fp, "%d %d", &numRowB, &numColB);
-            B = (int **)malloc(numRowB * sizeof(int *));
-            for (int r = 0; r < numRowB; r++) {
-                B[r] = (int *)malloc(numColB * sizeof(int));
-                for (int c = 0; c < numColB; c++) {
-                    fscanf(fp, "%d", &B[r][c]);
-                }
-            }
-
-            printf("\nmatrix B\n");
-            for (int r = 0; r < numRowB; r++) {
-                for (int c = 0; c < numColB; c++) {
-                    printf("%d ", B[r][c]);
-                }
-                printf("\n");
             }
 
             if (numColA != numRowB) {
