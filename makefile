@@ -1,7 +1,10 @@
-default: compile
+default: run-single
 
-compile:
+compile-multi:
 	gcc interpolation.c -pthread -o interpolation
 
-run: compile
-	./interpolation
+compile-single:
+	gcc interpolation.c -o interpolation
+
+run-single: compile-single
+	./interpolation 10
