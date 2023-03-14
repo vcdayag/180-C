@@ -10,15 +10,25 @@ typedef struct ARG {
     int colEnd;
 } args;
 
-
+int n;
 int **A;
-int **B;
-int numRowA, numRowB;
-int numColA, numColB;
+int numRowA;
+int numColA;
+
+void generateMatrix(int n){
+    A = (int **)malloc(numRowA * sizeof(int *));
+            for (int r = 0; r < numRowA; r++) {
+                A[r] = (int *)malloc(numColA * sizeof(int));
+                for (int c = 0; c < numColA; c++) {
+                    A[r][c] = 1;
+                }
+            }
+    return;
+}
 
 void *terrain_iter(void *argss) {
-    args *argument = (args *)argss;
-    for (int i = 0; i < numRowB; i++) {
+    args *arguments = (args *)argss;
+    for (int i = 0; i < arguments->n; i++) {
     }
     return NULL;
 }
@@ -35,41 +45,19 @@ int main(int argc, char *argv[]) {
     int testcases;
     FILE *fp;
 
-        // read file here
-        // you can use fscanf for reading the first and second lines
-        // check if the size is invalid, i.e. colA != rowB
-        fscanf(fp, "%d", &testcases);
         for (int testcase = 0; testcase < testcases; testcase++) {
-            printf("Testcase #%d\n", testcase + 1);
-            // read the matrix by repeated fscanf to an integer, then getchar until the matrix is filled or the end-of-file is reached
-            fscanf(fp, "%d %d", &numRowA, &numColA);
-            A = (int **)malloc(numRowA * sizeof(int *));
-            for (int r = 0; r < numRowA; r++) {
-                A[r] = (int *)malloc(numColA * sizeof(int));
-                for (int c = 0; c < numColA; c++) {
-                    fscanf(fp, "%d", &A[r][c]);
-                }
-            }
-
-            if (numColA != numRowB) {
-                printf("Column of A is not equal to Row of B");
-                printf("Can't do matrix multiplication");
-                return 0;
-            }
 
             // create your threads here. Pass to the thread the row of A and the column of B they need to check.
-            tid = (pthread_t *)malloc(numRowB * numColB * sizeof(pthread_t));
-            arguments = (args *)malloc(numRowB * numColB * sizeof(args));
-            for (int r = 0; r < numRowB; r++) {
-                for (int c = 0; c < numColB; c++) {
-                    int i = r * numColB + c;
-                    // arguments[i].Arow = r;
-                    // arguments[i].Bcol = c;
+            tid = (pthread_t *)malloc(n*n * sizeof(pthread_t));
+            arguments = (args *)malloc(n*n * sizeof(args));
+            for (int r = 0; r < n; r++) {
+                for (int c = 0; c < n; c++) {
+                    int i = r * n + c;
                     pthread_create(&tid[i], NULL, terrain_iter, (void *)&arguments[i]);
                 }
             }
             // join your threads here
-            for (int i = 0; i < numRowB*numColB; i++) {
+            for (int i = 0; i < n*n; i++) {
                 pthread_join(tid[i], NULL);
             }
             
@@ -84,7 +72,6 @@ int main(int argc, char *argv[]) {
             // }
             // printf("\n");
             free(A);
-            free(B);
             free(arguments);
             free(tid);
         }
