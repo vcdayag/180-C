@@ -88,7 +88,7 @@ void *terrain_iter(void *argss)
 
 int main(int argc, char *argv[])
 {
-    struct timeval begin, end;
+    struct timeval time_before, time_after;
 
     if (argc != 3)
     {
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
 
     generateMatrix(n);
 
-    gettimeofday(&begin, 0);
+    gettimeofday(&time_before, 0);
 
     pthread_t *tid = (pthread_t *)malloc(t * sizeof(pthread_t));
     args *arguments = (args *)malloc(t * sizeof(args));
@@ -121,13 +121,13 @@ int main(int argc, char *argv[])
         pthread_join(tid[thread], NULL);
     }
 
-    gettimeofday(&end, 0);
+    gettimeofday(&time_after, 0);
 
-    long seconds = end.tv_sec - begin.tv_sec;
-    long microseconds = end.tv_usec - begin.tv_usec;
-    double elapsed = seconds + microseconds*1e-6;
+    long seconds = time_after.tv_sec - time_before.tv_sec;
+    long microseconds = time_after.tv_usec - time_before.tv_usec;
+    double time_elapsed = seconds + microseconds*1e-6;
     
-    printf("Time elapsed: %f seconds.\n", elapsed);
+    printf("Time elapsed: %f seconds.\n", time_elapsed);
 
     // printMatrix(n);
 
