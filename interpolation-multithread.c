@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <pthread.h> // for threads
 #include <stdlib.h>  // for malloc
-#include <time.h>    // for time
+#include <sys/time.h> // for gettimeofday
 
 typedef struct ARG
 {
@@ -88,7 +88,7 @@ void *terrain_iter(void *argss)
 
 int main(int argc, char *argv[])
 {
-    clock_t time_before, time_after;
+    struct timeval begin, end;
 
     if (argc != 3)
     {
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
 
     generateMatrix(n);
 
-    time_before = clock();
+    gettimeofday(&begin, 0);
 
     pthread_t *tid = (pthread_t *)malloc(t * sizeof(pthread_t));
     args *arguments = (args *)malloc(t * sizeof(args));
@@ -121,9 +121,13 @@ int main(int argc, char *argv[])
         pthread_join(tid[thread], NULL);
     }
 
-    time_after = clock();
+    gettimeofday(&end, 0);
 
-    printf("Time elapsed: %lf\n", (double)(time_after - time_before) / CLOCKS_PER_SEC);
+    long seconds = end.tv_sec - begin.tv_sec;
+    long microseconds = end.tv_usec - begin.tv_usec;
+    double elapsed = seconds + microseconds*1e-6;
+    
+    printf("Time elapsed: %f seconds.\n", elapsed);
 
     // printMatrix(n);
 
