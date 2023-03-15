@@ -1,5 +1,4 @@
 #!/bin/bash
-gcc -O2 interpolation-multithread.c -pthread -o interpolation-multithread
 
 computer=$(uname -n)
 branch=$(git symbolic-ref --short HEAD)
@@ -11,7 +10,9 @@ benchdir="bench"
 mkdir -p "$benchdir"
 
 # check if there is an arguement
-if [ "$1" ]; then
+if [ "$1" ]
+then
+    gcc interpolation-multithread.c -pthread -o interpolation-multithread
     # create file
     file_csv="${benchdir}/${computer}_${branch}_${commit}_$1.csv"
     rm -f "$file_csv"
@@ -37,4 +38,33 @@ if [ "$1" ]; then
         echo -n ",$avg" >> "$file_csv"
         echo >> "$file_csv"
     done
+    rm -f "./interpolation-multithread"
+else
+    gcc interpolation.c -pthread -o interpolation-single
+    # create file
+    file_csv="${benchdir}/${computer}_${branch}_${commit}_single.csv"
+    rm -f "$file_csv"
+    touch "$file_csv"
+
+    for i in "${array[@]}"
+    do
+        echo "$i"
+        echo -n "$i" >> "$file_csv"
+
+        sum=0
+        for _ in {1..3}
+        do
+            output=$(./interpolation-single "$i")
+            echo "$output"
+            read -ra arr <<< "$output"
+
+            echo -n ",${arr[2]}" >> "$file_csv"
+            sum=$(bc -l <<< "${arr[2]} + ${sum}")
+        done
+        avg="$(bc -l <<< "${sum} / 3")"
+        echo "$avg"
+        echo -n ",$avg" >> "$file_csv"
+        echo >> "$file_csv"
+    done
+    rm -f "./interpolation-single"
 fi
