@@ -14,7 +14,7 @@ run-single: compile-single
 	./interpolation 10000
 
 run-multi: compile-multi
-	./interpolation-multithread 85000 10
+	./interpolation-multithread 20000 10
 
 run-multi-opt: compile-multi-opt
-	./IM-OPTIMIZED 85000 10
+	./IM-OPTIMIZED 20000 10
