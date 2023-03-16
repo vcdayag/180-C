@@ -54,6 +54,7 @@ void *terrain_iter(void *argss)
 {
     args *arguments = (args *)argss;
     int LRPOINTrow, LRPOINTcol;
+    printf("%d:%d\n", arguments->rowStart, arguments->rowEnd);
     for (int row = arguments->rowStart; row < arguments->rowEnd; row++)
     {
         LRPOINTrow = row - (row % 10);
@@ -106,11 +107,21 @@ int main(int argc, char *argv[])
     pthread_t *tid = (pthread_t *)malloc(t * sizeof(pthread_t));
     args *arguments = (args *)malloc(t * sizeof(args));
 
-    int section = n / t;
+    int numberOfRows = n / t;
+    int computedTotal = numberOfRows * t;
+    int toDistribute = n-computedTotal;
+    printf("numberofrows: %d\n",numberOfRows);
+    printf("computed total: %d\n",computedTotal);
+    printf("actual total: %d\n",n);
+    printf("to distribute: %d\n",toDistribute);
     for (int thread = 0; thread < t; thread++)
     {
-        arguments[thread].rowStart = thread * section;
-        arguments[thread].rowEnd = (thread + 1) * section;
+        arguments[thread].rowStart = thread * numberOfRows;
+        if(thread+1 == t){
+            arguments[thread].rowEnd = n;
+        }else{
+            arguments[thread].rowEnd = (thread + 1) * numberOfRows;
+        }
         // arguments[thread].colStart = 0;
         // arguments[thread].colEnd = n;
         pthread_create(&tid[thread], NULL, terrain_iter, (void *)&arguments[thread]);
@@ -129,7 +140,7 @@ int main(int argc, char *argv[])
     
     printf("Time elapsed: %f seconds.\n", time_elapsed);
 
-    // printMatrix(n);
+    printMatrix(n);
 
     // free MATRIX
     for (int i = 0; i < n; i++)
