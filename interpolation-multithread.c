@@ -35,8 +35,8 @@ void generateMatrix(int n)
         {
             if (r % 10 == 0 && c % 10 == 0)
             {
-                // MATRIX[r][c] = rand() % 1000 + 1;
-                MATRIX[r][c] = 420 + r / 10 + c / 10;
+                MATRIX[r][c] = rand() % 1000 + 1;
+                // MATRIX[r][c] = 420 + r / 10 + c / 10;
             }
             else
             {
