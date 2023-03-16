@@ -52,7 +52,6 @@ void *terrain_iter(void *argss)
 {
     args *arguments = (args *)argss;
     int LRPOINTrow, LRPOINTcol;
-    // printf("%d:%d\n", arguments->rowStart, arguments->rowEnd);
     for (int row = arguments->rowStart; row < arguments->rowEnd; row++)
     {
         LRPOINTrow = row - (row % 10);
@@ -108,10 +107,7 @@ int main(int argc, char *argv[])
     int numberOfRows = n / t;
     int computedTotal = numberOfRows * t;
     int toDistribute = n-computedTotal;
-    // printf("numberofrows: %d\n",numberOfRows);
-    // printf("computed total: %d\n",computedTotal);
-    // printf("actual total: %d\n",n);
-    // printf("to distribute: %d\n",toDistribute);
+
     int previousRowStart = 0;
     for (int thread = 0; thread < t; thread++)
     {
