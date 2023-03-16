@@ -17,7 +17,7 @@ then
     for n in "${threadsn[@]}"
     do
         # create file
-        file_csv="${benchdir}/${computer}_${branch}_${commit}_${n}.csv"
+        file_csv="${benchdir}/${computer}_${branch}_${commit}_${1}_${n}.csv"
         rm -f "$file_csv"
         touch "$file_csv"
 
@@ -43,6 +43,7 @@ then
         done
     done
     rm -f "./interpolation-multithread"
+    exit
 fi
 
 # check if there is an arguement
