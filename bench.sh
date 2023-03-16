@@ -3,9 +3,8 @@
 computer=$(uname -n)
 branch=$(git symbolic-ref --short HEAD)
 commit=$(git rev-parse --short HEAD)
-array=( 100 200 300 400 500 600 700 800 900 1000 2000 4000 8000 16000 20000 )
+nvalues=( 100 200 300 400 500 600 700 800 900 1000 2000 4000 8000 16000 20000 50000 )
 threads=( 1 2 4 8 16 32 64 )
-threadsn=( 8000 16000 20000 50000 )
 
 # create directory for benchmark results
 benchdir="bench"
@@ -50,9 +49,9 @@ then
     exit
 fi
 
-if [[ $1 == "exer02" ]]
+if [[ "$1" == "exer02" ]]
 then
-    for n in "${threadsn[@]}"
+    for n in "${nvalues[@]}"
     do
         exer02 "$n"
     done
@@ -60,43 +59,45 @@ then
 fi
 
 # check if there is an arguement
-if [ "$1" ]
+if [[ "$1" == "exer01" && "$2" ]]
 then
-    gcc interpolation-multithread.c -pthread -o interpolation-multithread
+    gcc interpolation.c -pthread -o interpolation-single
     # create file
-    file_csv="${benchdir}/${computer}_${branch}_${commit}_$1.csv"
+    file_csv="${benchdir}/${computer}_${branch}_${commit}_single_${2}.csv"
     rm -f "$file_csv"
     touch "$file_csv"
 
-    for i in "${array[@]}"
-    do
-        echo "$i"
-        echo -n "$i" >> "$file_csv"
+    echo "$2"
+    echo -n "$2" >> "$file_csv"
 
-        sum=0
-        for _ in {1..3}
-        do
-            output=$(./interpolation-multithread "$i" "$1")
-            echo "$output"
-            read -ra arr <<< "$output"
-            
-            echo -n ",${arr[2]}" >> "$file_csv"
-            sum=$(bc -l <<< "${arr[2]} + ${sum}")
-        done
-        avg="$(bc -l <<< "${sum} / 3")"
-        echo "$avg"
-        echo -n ",$avg" >> "$file_csv"
-        echo >> "$file_csv"
+    sum=0
+    for _ in {1..3}
+    do
+        output=$(./interpolation-single "$2")
+        echo "$output"
+        read -ra arr <<< "$output"
+
+        echo -n ",${arr[2]}" >> "$file_csv"
+        sum=$(bc -l <<< "${arr[2]} + ${sum}")
     done
-    rm -f "./interpolation-multithread"
-else
+    avg="$(bc -l <<< "${sum} / 3")"
+    echo "$avg"
+    echo -n ",$avg" >> "$file_csv"
+    echo >> "$file_csv"
+
+    rm -f "./interpolation-single"
+    exit
+fi
+
+if [[ "$1" == "exer01" ]]
+then
     gcc interpolation.c -pthread -o interpolation-single
     # create file
     file_csv="${benchdir}/${computer}_${branch}_${commit}_single.csv"
     rm -f "$file_csv"
     touch "$file_csv"
 
-    for i in "${array[@]}"
+    for i in "${nvalues[@]}"
     do
         echo "$i"
         echo -n "$i" >> "$file_csv"
@@ -117,4 +118,5 @@ else
         echo >> "$file_csv"
     done
     rm -f "./interpolation-single"
+    exit
 fi
