@@ -7,8 +7,6 @@ typedef struct ARG
 {
     int rowStart;
     int rowEnd;
-    int colStart;
-    int colEnd;
 } args;
 
 float **MATRIX;
@@ -54,7 +52,7 @@ void *terrain_iter(void *argss)
 {
     args *arguments = (args *)argss;
     int LRPOINTrow, LRPOINTcol;
-    printf("%d:%d\n", arguments->rowStart, arguments->rowEnd);
+    // printf("%d:%d\n", arguments->rowStart, arguments->rowEnd);
     for (int row = arguments->rowStart; row < arguments->rowEnd; row++)
     {
         LRPOINTrow = row - (row % 10);
@@ -110,10 +108,10 @@ int main(int argc, char *argv[])
     int numberOfRows = n / t;
     int computedTotal = numberOfRows * t;
     int toDistribute = n-computedTotal;
-    printf("numberofrows: %d\n",numberOfRows);
-    printf("computed total: %d\n",computedTotal);
-    printf("actual total: %d\n",n);
-    printf("to distribute: %d\n",toDistribute);
+    // printf("numberofrows: %d\n",numberOfRows);
+    // printf("computed total: %d\n",computedTotal);
+    // printf("actual total: %d\n",n);
+    // printf("to distribute: %d\n",toDistribute);
     int previousRowStart = 0;
     for (int thread = 0; thread < t; thread++)
     {
@@ -126,10 +124,9 @@ int main(int argc, char *argv[])
         }else if(thread+1 == t){
             arguments[thread].rowEnd = n;
         }
-        
+
         previousRowStart = arguments[thread].rowEnd;
-        // arguments[thread].colStart = 0;
-        // arguments[thread].colEnd = n;
+
         pthread_create(&tid[thread], NULL, terrain_iter, (void *)&arguments[thread]);
     }
     // join your threads here
@@ -146,7 +143,7 @@ int main(int argc, char *argv[])
     
     printf("Time elapsed: %f seconds.\n", time_elapsed);
 
-    printMatrix(n);
+    // printMatrix(n);
 
     // free MATRIX
     for (int i = 0; i < n; i++)
