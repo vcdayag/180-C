@@ -114,14 +114,20 @@ int main(int argc, char *argv[])
     printf("computed total: %d\n",computedTotal);
     printf("actual total: %d\n",n);
     printf("to distribute: %d\n",toDistribute);
+    int previousRowStart = 0;
     for (int thread = 0; thread < t; thread++)
     {
-        arguments[thread].rowStart = thread * numberOfRows;
-        if(thread+1 == t){
+        arguments[thread].rowStart = previousRowStart;
+        arguments[thread].rowEnd = previousRowStart + numberOfRows;
+
+        if(toDistribute != 0){
+            toDistribute--;
+            arguments[thread].rowEnd += 1;
+        }else if(thread+1 == t){
             arguments[thread].rowEnd = n;
-        }else{
-            arguments[thread].rowEnd = (thread + 1) * numberOfRows;
         }
+        
+        previousRowStart = arguments[thread].rowEnd;
         // arguments[thread].colStart = 0;
         // arguments[thread].colEnd = n;
         pthread_create(&tid[thread], NULL, terrain_iter, (void *)&arguments[thread]);
