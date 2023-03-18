@@ -52,10 +52,12 @@ then
     rm -f "$file_csv"
     touch "$file_csv"
 
+    initialTime=0
+
     for i in $(seq 1 "$3")
     do
         echo "n = $1 : $i thread(s)"
-        echo -n "$i" >> "$file_csv"
+        echo -n "$2,$i" >> "$file_csv"
 
         sum=0
         for _ in {1..3}
@@ -67,9 +69,19 @@ then
             echo -n ",${arr[2]}" >> "$file_csv"
             sum=$(bc -l <<< "${arr[2]} + ${sum}")
         done
+        
         avg="$(bc -l <<< "${sum} / 3")"
-        echo "$avg"
+
+        if [[ i -eq 1 ]]
+        then 
+            initialTime=$avg
+        fi
+        echo "Average Time: $avg"
         echo -n ",$avg" >> "$file_csv"
+
+        percentFaster="$(bc -l <<< "(${initialTime}/${avg})-1")"
+        echo "Percent Faster: $percentFaster"
+        echo -n ",$percentFaster" >> "$file_csv"
         echo >> "$file_csv"
     done
 
