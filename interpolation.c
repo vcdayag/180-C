@@ -21,6 +21,8 @@ void printMatrix(int n)
 
 void generateMatrix(int n)
 {
+    srand((unsigned) time(NULL));
+
     MATRIX = (float **)malloc(n * sizeof(float *));
     for (int r = 0; r < n; r++)
     {
