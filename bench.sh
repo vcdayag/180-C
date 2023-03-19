@@ -10,6 +10,24 @@ threads=( 1 2 4 8 16 32 64 )
 benchdir="bench"
 mkdir -p "$benchdir"
 
+merge(){
+    output_csv="${benchdir}/${computer}_${branch}_${commit}_exer02.csv"
+    rm -f "$output_csv"
+    touch "$output_csv"
+
+    for i in "${nvalues[@]}"
+    do
+    file_csv="${benchdir}/${computer}_${branch}_${commit}_exer02_${i}.csv"
+    echo "$(cat "$file_csv")" >> "$output_csv"
+    done
+
+    for i in "${nvalues[@]}"
+    do
+    file_csv="${benchdir}/${computer}_${branch}_${commit}_exer02_${i}.csv"
+    rm -f "$file_csv"
+    done
+}
+
 exer02_1=0
 exer02_2=()
 exer02_3=0
@@ -23,7 +41,6 @@ exer02()
 
     # create file
     file_csv="${benchdir}/${computer}_${branch}_${commit}_exer02_${exer02_3}.csv"
-    echo $file_csv
     rm -f "$file_csv"
     touch "$file_csv"
 
@@ -93,6 +110,7 @@ then
         exer02_3=${n}
         exer02
     done
+    merge
     exit
 fi
 
