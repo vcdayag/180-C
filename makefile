@@ -3,9 +3,8 @@ default: run-single
 compile-multi-opt:
 	gcc -O2 interpolation-multithread.c -pthread -o IM-OPTIMIZED
 
-
-compile-multi:
-	gcc interpolation-multithread.c -pthread -o interpolation-multithread
+compile-single:
+	gcc interpolation.c -o interpolation
 
 compile-auto:
 	gcc -Iheaders/auto interpolation-multithread.c -pthread -o interpolation-multithread
@@ -13,15 +12,18 @@ compile-auto:
 compile-manual:
 	gcc -Iheaders/manual interpolation-multithread.c -pthread -o interpolation-multithread
 
+compile-exer02: compile-auto
 
-compile-single:
-	gcc interpolation.c -o interpolation
+compile-exer03: compile-manual
 
-run-single: compile-single
-	./interpolation 10000
+single: compile-single
+	./interpolation 16000 && \
+	rm ./interpolation
 
-run-multi: compile-multi
-	./interpolation-multithread 20000 10
+exer02: compile-exer02
+	./interpolation-multithread 16000 8 && \
+	rm ./interpolation-multithread
 
-run-multi-opt: compile-multi-opt
-	./IM-OPTIMIZED 20000 10
+exer03: compile-exer03
+	./interpolation-multithread 16000 8 && \
+	rm ./interpolation-multithread
