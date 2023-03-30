@@ -5,7 +5,7 @@
 #include <sys/time.h> // for gettimeofday
 #include <unistd.h>   // for getting number of threads
 
-// #define MANUALAFFINITY
+#include "coreaffinity.h"
 
 typedef struct ARG
 {

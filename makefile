@@ -7,6 +7,13 @@ compile-multi-opt:
 compile-multi:
 	gcc interpolation-multithread.c -pthread -o interpolation-multithread
 
+compile-auto:
+	gcc -Iheaders/auto interpolation-multithread.c -pthread -o interpolation-multithread
+
+compile-manual:
+	gcc -Iheaders/manual interpolation-multithread.c -pthread -o interpolation-multithread
+
+
 compile-single:
 	gcc interpolation.c -o interpolation
 
