@@ -12,11 +12,13 @@ compile-auto:
 compile-manual:
 	gcc -Iheaders/manual interpolation-multithread.c -pthread -o interpolation-multithread
 
+compile-exer01: compile-single
+
 compile-exer02: compile-auto
 
 compile-exer03: compile-manual
 
-single: compile-single
+exer01: compile-exer01
 	./interpolation 16000 && \
 	rm ./interpolation
 
