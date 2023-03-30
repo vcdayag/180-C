@@ -1,9 +1,9 @@
 #include <stdio.h>
-#include <stdlib.h>  // for malloc
+#include <stdlib.h> // for malloc
 #define __USE_GNU
-#include <pthread.h> // for threads
+#include <pthread.h>  // for threads
 #include <sys/time.h> // for gettimeofday
-#include <unistd.h> // for getting number of threads
+#include <unistd.h>   // for getting number of threads
 
 // #define MANUALAFFINITY
 
@@ -31,8 +31,8 @@ void printMatrix(int n)
 }
 
 void generateMatrix(int n)
-{   
-    srand((unsigned) time(NULL));
+{
+    srand((unsigned)time(NULL));
 
     MATRIX = (float **)malloc(n * sizeof(float *));
     for (int r = 0; r < n; r++)
@@ -58,17 +58,17 @@ int n, t;
 void *terrain_iter(void *argss)
 {
     args *arguments = (args *)argss;
-    
-    #ifdef MANUALAFFINITY
+
+#ifdef MANUALAFFINITY
     const pthread_t pid = pthread_self();
     const int core_id = arguments->coreID;
 
     cpu_set_t cpuset;
     CPU_ZERO(&cpuset);
     CPU_SET(core_id, &cpuset);
-    
+
     const int set_result = pthread_setaffinity_np(pid, sizeof(cpu_set_t), &cpuset);
-    #endif
+#endif
 
     int LRPOINTrow, LRPOINTcol;
     for (int row = arguments->rowStart; row < arguments->rowEnd; row++)
@@ -105,7 +105,7 @@ void *terrain_iter(void *argss)
 
 int main(int argc, char *argv[])
 {
-    
+
     struct timeval time_before, time_after;
 
     if (argc != 3)
@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
 
     int numberOfRows = n / t;
     int computedTotal = numberOfRows * t;
-    int toDistribute = n-computedTotal;
+    int toDistribute = n - computedTotal;
 
     int previousRowStart = 0;
     int core_id = 0;
@@ -135,27 +135,28 @@ int main(int argc, char *argv[])
         arguments[thread].rowStart = previousRowStart;
         arguments[thread].rowEnd = previousRowStart + numberOfRows;
 
-        #ifdef MANUALAFFINITY
+#ifdef MANUALAFFINITY
         arguments[thread].coreID = thread % numberOfProcessors;
-        #endif
+#endif
 
-        if(toDistribute != 0){
+        if (toDistribute != 0)
+        {
             toDistribute--;
             arguments[thread].rowEnd += 1;
-        }else if(thread+1 == t){
+        }
+        else if (thread + 1 == t)
+        {
             arguments[thread].rowEnd = n;
         }
 
         previousRowStart = arguments[thread].rowEnd;
- 
-        }
+    }
 
     gettimeofday(&time_before, 0);
 
     for (int thread = 0; thread < t; thread++)
     {
         pthread_create(&tid[thread], NULL, terrain_iter, (void *)&arguments[thread]);
-       
     }
     // join your threads here
     for (int thread = 0; thread < t; thread++)
@@ -167,8 +168,8 @@ int main(int argc, char *argv[])
 
     long seconds = time_after.tv_sec - time_before.tv_sec;
     long microseconds = time_after.tv_usec - time_before.tv_usec;
-    double time_elapsed = seconds + microseconds*1e-6;
-    
+    double time_elapsed = seconds + microseconds * 1e-6;
+
     printf("Time elapsed: %f seconds.\n", time_elapsed);
 
     // printMatrix(n);
