@@ -1,12 +1,17 @@
 #include <stdio.h>
-#include <pthread.h> // for threads
 #include <stdlib.h>  // for malloc
+#define __USE_GNU
+#include <pthread.h> // for threads
 #include <sys/time.h> // for gettimeofday
+#include <unistd.h> // for getting number of threads
+
+// #define MANUALAFFINITY
 
 typedef struct ARG
 {
     int rowStart;
     int rowEnd;
+    int coreID;
 } args;
 
 float **MATRIX;
@@ -53,6 +58,18 @@ int n, t;
 void *terrain_iter(void *argss)
 {
     args *arguments = (args *)argss;
+    
+    #ifdef MANUALAFFINITY
+    const pthread_t pid = pthread_self();
+    const int core_id = arguments->coreID;
+
+    cpu_set_t cpuset;
+    CPU_ZERO(&cpuset);
+    CPU_SET(core_id, &cpuset);
+    
+    const int set_result = pthread_setaffinity_np(pid, sizeof(cpu_set_t), &cpuset);
+    #endif
+
     int LRPOINTrow, LRPOINTcol;
     for (int row = arguments->rowStart; row < arguments->rowEnd; row++)
     {
@@ -88,6 +105,7 @@ void *terrain_iter(void *argss)
 
 int main(int argc, char *argv[])
 {
+    
     struct timeval time_before, time_after;
 
     if (argc != 3)
@@ -99,9 +117,9 @@ int main(int argc, char *argv[])
     n = atoi(argv[1]) + 1;
     t = atoi(argv[2]);
 
-    generateMatrix(n);
+    int numberOfProcessors = sysconf(_SC_NPROCESSORS_ONLN);
 
-    gettimeofday(&time_before, 0);
+    generateMatrix(n);
 
     pthread_t *tid = (pthread_t *)malloc(t * sizeof(pthread_t));
     args *arguments = (args *)malloc(t * sizeof(args));
@@ -111,10 +129,15 @@ int main(int argc, char *argv[])
     int toDistribute = n-computedTotal;
 
     int previousRowStart = 0;
+    int core_id = 0;
     for (int thread = 0; thread < t; thread++)
     {
         arguments[thread].rowStart = previousRowStart;
         arguments[thread].rowEnd = previousRowStart + numberOfRows;
+
+        #ifdef MANUALAFFINITY
+        arguments[thread].coreID = thread % numberOfProcessors;
+        #endif
 
         if(toDistribute != 0){
             toDistribute--;
@@ -124,8 +147,15 @@ int main(int argc, char *argv[])
         }
 
         previousRowStart = arguments[thread].rowEnd;
+ 
+        }
 
+    gettimeofday(&time_before, 0);
+
+    for (int thread = 0; thread < t; thread++)
+    {
         pthread_create(&tid[thread], NULL, terrain_iter, (void *)&arguments[thread]);
+       
     }
     // join your threads here
     for (int thread = 0; thread < t; thread++)
