@@ -62,6 +62,7 @@ void *terrain_iter(void *argss)
 #ifdef MANUALAFFINITY
     const pthread_t pid = pthread_self();
     const int core_id = arguments->coreID;
+    // printf("Core: %2d | Rows: %d to %d\n", arguments->coreID, arguments->rowStart, arguments->rowEnd);
 
     cpu_set_t cpuset;
     CPU_ZERO(&cpuset);
