@@ -60,15 +60,8 @@ void *terrain_iter(void *argss)
     args *arguments = (args *)argss;
 
 #ifdef MANUALAFFINITY
-    const pthread_t pid = pthread_self();
-    const int core_id = arguments->coreID;
-    // printf("Core: %2d | Rows: %d to %d\n", arguments->coreID, arguments->rowStart, arguments->rowEnd);
-
-    cpu_set_t cpuset;
-    CPU_ZERO(&cpuset);
-    CPU_SET(core_id, &cpuset);
-
-    const int set_result = pthread_setaffinity_np(pid, sizeof(cpu_set_t), &cpuset);
+// debug print for checking of core affinity
+// printf("Core: %2d | Rows: %d to %d\n", arguments->coreID, arguments->rowStart, arguments->rowEnd);
 #endif
 
     int LRPOINTrow, LRPOINTcol;
@@ -108,6 +101,12 @@ int main(int argc, char *argv[])
 {
 
     struct timeval time_before, time_after;
+#ifdef MANUALAFFINITY
+    // manual setting of core affinity
+    pthread_attr_t attr;
+    cpu_set_t cpuset;
+    pthread_attr_init(&attr);
+#endif
 
     if (argc != 3)
     {
@@ -137,6 +136,7 @@ int main(int argc, char *argv[])
         arguments[thread].rowEnd = previousRowStart + numberOfRows;
 
 #ifdef MANUALAFFINITY
+        // manual setting of core affinity
         arguments[thread].coreID = thread % numberOfProcessors;
 #endif
 
@@ -157,7 +157,15 @@ int main(int argc, char *argv[])
 
     for (int thread = 0; thread < t; thread++)
     {
+#ifdef MANUALAFFINITY
+        // manual setting of core affinity
+        CPU_ZERO(&cpuset);
+        CPU_SET(arguments[thread].coreID, &cpuset);
+        pthread_attr_setaffinity_np(&attr, sizeof(cpu_set_t), &cpuset);
+        pthread_create(&tid[thread], &attr, terrain_iter, (void *)&arguments[thread]);
+#else
         pthread_create(&tid[thread], NULL, terrain_iter, (void *)&arguments[thread]);
+#endif
     }
     // join your threads here
     for (int thread = 0; thread < t; thread++)

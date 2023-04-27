@@ -37,7 +37,8 @@ exer02()
     # $exer02_2 = array of t
     # $exer02_3 = filename
 
-    gcc interpolation-multithread.c -pthread -o interpolation-multithread
+    # gcc interpolation-multithread.c -pthread -o interpolation-multithread
+    make compile-exer03
 
     # create file
     file_csv="${benchdir}/${computer}_${branch}_${commit}_exer02_${exer02_3}.csv"
