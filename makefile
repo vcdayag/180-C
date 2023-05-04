@@ -29,3 +29,10 @@ exer02: compile-exer02
 exer03: compile-exer03
 	./interpolation-multithread 16000 8 && \
 	rm ./interpolation-multithread
+
+
+compile-server:
+	gcc socket/server.c -o server
+
+compile-client:
+	gcc socket/client.c -o client
