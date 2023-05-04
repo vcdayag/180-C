@@ -1,4 +1,7 @@
 
+make compile-server
+make compile-client
+
 gnome-terminal -- bash -c "./server; exec bash"
 
 for _ in {1..3}
