@@ -25,6 +25,28 @@ float *generateCornerMatrix(int n)
     return CORNERMATRIX;
 }
 
+void generateMatrixFromCorners(float* CORNERMATRIX, int n)
+{
+    int cornervals = (int)n / 10 + 1; 
+    MATRIX = (float **)malloc(n * sizeof(float *));
+    for (int r = 0; r < n; r++)
+    {
+        MATRIX[r] = (float *)malloc(n * sizeof(float));
+        for (int c = 0; c < n; c++)
+        {
+            if (r % 10 == 0 && c % 10 == 0)
+            {
+                MATRIX[r][c] = CORNERMATRIX[r/10*cornervals + c/10];
+            }
+            else
+            {
+                MATRIX[r][c] = 0;
+            }
+        }
+    }
+    return;
+}
+
 void printMatrix(int n)
 {
     for (int r = 0; r < n; r++)
@@ -62,15 +84,15 @@ void generateMatrix(int n)
     return;
 }
 
-void terrain_iter(int n)
+void terrain_iter(int nrow, int ncol)
 {
     int LRPOINTrow, LRPOINTcol;
-    for (int row = 0; row < n; row++)
+    for (int row = 0; row < nrow; row++)
     {
         LRPOINTrow = row - (row % 10);
         if (row % 10 == 0 && row != 0)
             LRPOINTrow -= 10;
-        for (int col = 0; col < n; col++)
+        for (int col = 0; col < ncol; col++)
         {
             if (col % 10 == 0)
             {

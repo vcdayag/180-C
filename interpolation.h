@@ -8,9 +8,12 @@
 #include <stdlib.h>   // for malloc
 #include <sys/time.h> // for gettimeofday
 
+extern float **MATRIX;
+
 void printMatrix(int n);
 void generateMatrix(int n);
-void terrain_iter(int n);
+void terrain_iter(int nrow, int ncol);
 float *generateCornerMatrix(int n);
+void generateMatrixFromCorners(float* CORNERMATRIX, int n);
 
 #endif /* INTERPOLATIONH */

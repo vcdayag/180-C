@@ -39,6 +39,8 @@ compile-client:
 
 compile-exer04:
 	gcc -c server.c
+	gcc -c client.c
 	gcc -c interpolation.c
 	gcc -o server server.o interpolation.o
+	gcc -o client client.o interpolation.o
 	rm *.o

@@ -1,6 +1,5 @@
 
-make compile-server
-make compile-client
+make compile-exer04
 
 gnome-terminal -- bash -c "./server; exec bash"
 

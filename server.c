@@ -60,20 +60,25 @@ int main(int argc, char *argv[])
 
     puts("Connection accepted");
 
-    int n = 35001;
-    int arraysize = (int)(n / 10) + 1;
-    int mcorners[1] = {arraysize * arraysize};
+    int n = 11;
+    int cornerLengthRow = (int)(n / 10) + 1;
+    int cornerLengthCol = (int)(n / 10) + 1;
+    int cornerMatrixInfo[3] = {
+        cornerLengthRow * cornerLengthRow, // total length
+        cornerLengthRow,                   // row length
+        cornerLengthCol,                   // column length
+    };
 
-    write(client_sock, &mcorners, 1 * sizeof(int));
+    write(client_sock, &cornerMatrixInfo, 3 * sizeof(int));
     recv(client_sock, &clientMessage, 3 * sizeof(int), 0);
 
     cornersList = generateCornerMatrix(n);
-    for (size_t i = 0; i < mcorners[0]; i++)
+    for (size_t i = 0; i < cornerMatrixInfo[0]; i++)
     {
         printf("%f ", cornersList[i]);
     }
 
-    write(client_sock, cornersList, mcorners[0] * sizeof(float *));
+    write(client_sock, cornersList, cornerMatrixInfo[0] * sizeof(float *));
     recv(client_sock, &clientMessage, 3 * sizeof(int), 0);
 
     if (read_size == 0)

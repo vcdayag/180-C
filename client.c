@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#include "interpolation.h"
+
 #define MAX 11
 int main(int argc, char *argv[])
 {
@@ -35,12 +37,17 @@ int main(int argc, char *argv[])
 	puts("Connected\n");
 
 	// Receive a reply from the server
-	int arraysize[1];
-	if (recv(sock, &arraysize, 1 * sizeof(int), 0) < 0)
+	int cornerMatrixInfo[3];
+	if (recv(sock, &cornerMatrixInfo, 3 * sizeof(int), 0) < 0)
 	{
 		puts("recv failed");
 		return 0;
 	}
+
+	int nrow = cornerMatrixInfo[1] * 10 - 9;
+	int ncol = cornerMatrixInfo[2] * 10 - 9;
+
+	printf("%d", cornerMatrixInfo[0]);
 
 	puts("Server reply :\n");
 	if (send(sock, &datainfo, 3 * sizeof(int), 0) < 0)
@@ -49,19 +56,26 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	float *CORNERMATRIX = (float *)malloc(arraysize[0] * sizeof(float *));
+	float *CORNERMATRIX = (float *)malloc(cornerMatrixInfo[0] * sizeof(float *));
 	// Receive a cornermatrix from the server
-	if (recv(sock, CORNERMATRIX, arraysize[0] * sizeof(float *), MSG_WAITALL) < 0)
+	if (recv(sock, CORNERMATRIX, cornerMatrixInfo[0] * sizeof(float *), MSG_WAITALL) < 0)
 	{
 		puts("recv failed");
 		return 0;
 	}
 
 	puts("Server reply :\n");
-	for (int i = 0; i < arraysize[0]; i++)
+	for (int i = 0; i < cornerMatrixInfo[0]; i++)
 	{
 		printf("%f ", CORNERMATRIX[i]);
 	}
+
+	printf("\n");
+
+	float **MATRIX;
+	generateMatrixFromCorners(CORNERMATRIX, nrow);
+	terrain_iter(nrow, ncol);
+	printMatrix(nrow);
 
 	// close the socket
 	close(sock);
