@@ -4,9 +4,28 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <stdlib.h>
+
+#include <pthread.h>  // for threads
+#include <stdlib.h>   // for malloc
+#include <sys/time.h> // for gettimeofday
 
 void bubble_sort(int[], int);
+float *generateCornerMatrix(int n)
+{
+    srand((unsigned)time(NULL));
+
+    int cornervals = (int)n / 10 + 1;
+    float *CORNERMATRIX = (float *)malloc(cornervals * cornervals * sizeof(float *));
+
+    for (int r = 0; r < cornervals; r++)
+    {
+        for (int c = 0; c < cornervals; c++)
+        {
+            CORNERMATRIX[r * cornervals + c] = rand() % 1000 + 1;
+        }
+    }
+    return CORNERMATRIX;
+}
 
 // Driver code
 int main(int argc, char *argv[])
@@ -14,8 +33,10 @@ int main(int argc, char *argv[])
     int socket_desc, client_sock, c, read_size;
     struct sockaddr_in server, client;
     int message[10], i;
-    int datainfo[3];
-    int* inputlist;
+    int clientMessage[3];
+    int *inputlist;
+
+    float *cornersList;
 
     // Create socket
     socket_desc = socket(AF_INET, SOCK_STREAM, 0);
@@ -57,26 +78,20 @@ int main(int argc, char *argv[])
 
     puts("Connection accepted");
 
-    recv(client_sock, &datainfo, 3 * sizeof(int), 0);
-    for (int i = 0; i < 3; i++)
+    int n = 8001;
+    int mcorners[1] = {(int)(n / 10) + 1};
+
+    write(client_sock, &mcorners, 1 * sizeof(int));
+    recv(client_sock, &clientMessage, 3 * sizeof(int), 0);
+
+    cornersList = generateCornerMatrix(n);
+    for (size_t i = 0; i < mcorners[0] * mcorners[0]; i++)
     {
-        printf("%d ", datainfo[i]);
+        printf("%f ", cornersList[i]);
     }
-    printf("\n");
 
-    write(client_sock, &datainfo, 3 * sizeof(int));
-    
-    inputlist = ( int* ) malloc(datainfo[0]*sizeof(int));
-
-
-    // Receive a message from client
-    while ((read_size = recv(client_sock, inputlist, datainfo[0] * sizeof(int), 0)) > 0)
-    {
-
-        bubble_sort(inputlist, datainfo[0]);
-
-        write(client_sock, inputlist, datainfo[0] * sizeof(int));
-    }
+    write(client_sock, cornersList, mcorners[0] * mcorners[0] * sizeof(float));
+    recv(client_sock, &clientMessage, 3 * sizeof(int), 0);
 
     if (read_size == 0)
     {

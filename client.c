@@ -12,17 +12,8 @@ int main(int argc, char* argv[])
 {
 	int sock;
 	struct sockaddr_in server;
-    int* integers;
     int datainfo[3] = {MAX,0,0};
     
-    integers = ( int* ) malloc(MAX * sizeof(int));
-    for (int i = 0; i < MAX; i++)
-    {
-        integers[i]= i;
-    }
-    integers[8]= 69;
-    
-
 	// Create socket
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == -1) {
@@ -42,36 +33,37 @@ int main(int argc, char* argv[])
 
 	puts("Connected\n");
 
-	if (send(sock, &datainfo, 3 * sizeof(int), 0) < 0) {
-		puts("Send failed");
-		return 1;
-	}
-
 	// Receive a reply from the server
-	if (recv(sock, &datainfo, 3 * sizeof(int), 0) < 0) {
+	int arraysize[1];
+	if (recv(sock, &arraysize, 1 * sizeof(int), 0) < 0) {
 		puts("recv failed");
 		return 0;
 	}
 
     puts("Server reply :\n");
-	for (int i = 0; i < 3; i++) {
-		printf("%d\n", datainfo[i]);
+	printf("%d\n", arraysize[0]);
+
+	for (int i = 0; i < 3; i++)
+	{
+		datainfo[i] = 69;
 	}
 
-    if (send(sock, integers, MAX * sizeof(int), 0) < 0) {
+    if (send(sock, &datainfo, 3 * sizeof(int), 0) < 0) {
 		puts("Send failed");
 		return 1;
 	}
 
+	float* CORNERMATRIX = ( float* ) malloc(arraysize[0] * arraysize[0] * sizeof(float *));
+
 	// Receive a reply from the server
-	if (recv(sock, integers, MAX * sizeof(int), 0) < 0) {
+	if (recv(sock, CORNERMATRIX, arraysize[0] * arraysize[0] * sizeof(float), 0) < 0) {
 		puts("recv failed");
 		return 0;
 	}
 
 	puts("Server reply :\n");
-	for (int i = 0; i < MAX; i++) {
-		printf("%d\n", integers[i]);
+	for (int i = 0; i <  arraysize[0] * arraysize[0]; i++) {
+		printf("%f\n", CORNERMATRIX[i]);
 	}
 
 	// close the socket
