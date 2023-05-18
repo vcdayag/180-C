@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     // Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
-    server.sin_port = htons(5050);
+    server.sin_port = htons(5600);
 
     // Bind the socket
     if (bind(socket_desc, (struct sockaddr *)&server, sizeof(server)) < 0)
@@ -77,19 +77,20 @@ int main(int argc, char *argv[])
 
     puts("Connection accepted");
 
-    int n = 8001;
-    int mcorners[1] = {(int)(n / 10) + 1};
+    int n = 35001;
+    int arraysize = (int)(n / 10) + 1;
+    int mcorners[1] = {arraysize*arraysize};
 
     write(client_sock, &mcorners, 1 * sizeof(int));
     recv(client_sock, &clientMessage, 3 * sizeof(int), 0);
 
     cornersList = generateCornerMatrix(n);
-    for (size_t i = 0; i < mcorners[0] * mcorners[0]; i++)
+    for (size_t i = 0; i < mcorners[0]; i++)
     {
         printf("%f ", cornersList[i]);
     }
 
-    write(client_sock, cornersList, mcorners[0] * mcorners[0] * sizeof(float));
+    write(client_sock, cornersList, mcorners[0] * sizeof(float*));
     recv(client_sock, &clientMessage, 3 * sizeof(int), 0);
 
     if (read_size == 0)
