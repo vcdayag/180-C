@@ -9,7 +9,6 @@
 #include <stdlib.h>   // for malloc
 #include <sys/time.h> // for gettimeofday
 
-void bubble_sort(int[], int);
 float *generateCornerMatrix(int n)
 {
     srand((unsigned)time(NULL));
@@ -103,25 +102,4 @@ int main(int argc, char *argv[])
     }
 
     return 0;
-}
-
-// Function to sort the array
-void bubble_sort(int list[], int n)
-{
-    int c, d, t;
-
-    for (c = 0; c < (n - 1); c++)
-    {
-        for (d = 0; d < n - c - 1; d++)
-        {
-            if (list[d] > list[d + 1])
-            {
-
-                /* Swapping */
-                t = list[d];
-                list[d] = list[d + 1];
-                list[d + 1] = t;
-            }
-        }
-    }
 }
