@@ -43,23 +43,6 @@ int main(int argc, char *argv[])
     }
     puts("bind done");
 
-    // listen to the socket
-    listen(socket_desc, 3);
-
-    puts("Waiting for incoming connections...");
-    c = sizeof(struct sockaddr_in);
-
-    // accept connection from an incoming client
-    client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t *)&c);
-
-    if (client_sock < 0)
-    {
-        perror("accept failed");
-        return 1;
-    }
-
-    puts("Connection accepted");
-
     int n = 11;
     int cornerLengthRow = (int)(n / 10) + 1;
     int cornerLengthCol = (int)(n / 10) + 1;
@@ -69,25 +52,50 @@ int main(int argc, char *argv[])
         cornerLengthCol,                   // column length
     };
 
-    write(client_sock, &cornerMatrixInfo, 3 * sizeof(int));
-    recv(client_sock, &clientMessage, 3 * sizeof(int), 0);
+    int slavecount = 2;
+    int slavecountrecieved = 0;
+    int slavecountfinished = 0;
 
-    cornersList = generateCornerMatrix(n);
-    for (size_t i = 0; i < cornerMatrixInfo[0]; i++)
+    // listen to the socket
+    listen(socket_desc, 3);
+    
+    while (slavecount != slavecountrecieved)
     {
-        printf("%f ", cornersList[i]);
-    }
 
-    write(client_sock, cornersList, cornerMatrixInfo[0] * sizeof(float *));
-    recv(client_sock, &clientMessage, 3 * sizeof(int), 0);
+        puts("Waiting for incoming connections...");
+        c = sizeof(struct sockaddr_in);
 
-    if (read_size == 0)
-    {
-        puts("Client disconnected");
-    }
-    else if (read_size == -1)
-    {
-        perror("recv failed");
+        // accept connection from an incoming client
+        client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t *)&c);
+
+        if (client_sock < 0)
+        {
+            perror("accept failed");
+            return 1;
+        }
+
+        puts("Connection accepted");
+
+        write(client_sock, &cornerMatrixInfo, 3 * sizeof(int));
+        recv(client_sock, &clientMessage, 3 * sizeof(int), 0);
+
+        cornersList = generateCornerMatrix(n);
+        for (size_t i = 0; i < cornerMatrixInfo[0]; i++)
+        {
+            printf("%f ", cornersList[i]);
+        }
+
+        write(client_sock, cornersList, cornerMatrixInfo[0] * sizeof(float *));
+        recv(client_sock, &clientMessage, 3 * sizeof(int), 0);
+
+        if (read_size == 0)
+        {
+            puts("Client disconnected");
+        }
+        else if (read_size == -1)
+        {
+            perror("recv failed");
+        }
     }
 
     return 0;
