@@ -1,15 +1,14 @@
-// Server code in C to sort the array
 #include <arpa/inet.h>
-#include <stdio.h>
-#include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <stdlib.h>
+
+#include "interpolation.h"
+#include "distributed.h"
 
 #include <pthread.h>  // for threads
 #include <stdlib.h>   // for malloc
 #include <sys/time.h> // for gettimeofday
-#include "interpolation.h"
-#include "distributed.h"
 
 int main(int argc, char *argv[])
 {
@@ -28,22 +27,22 @@ int main(int argc, char *argv[])
     {
         printf("Could not create socket");
     }
-    puts("Socket created");
+    printf("Socket created");
 
     // Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
-    server.sin_port = htons(5600);
+    server.sin_port = htons(5050);
 
     // Bind the socket
     if (bind(socket_desc, (struct sockaddr *)&server, sizeof(server)) < 0)
     {
 
         // print the error message
-        perror("bind failed. Error");
+        printf("bind failed. Error");
         return 1;
     }
-    puts("bind done");
+    printf("bind done");
 
     int n = 11;
     int cornerLengthRow = (int)(n / 10) + 1;
@@ -64,7 +63,7 @@ int main(int argc, char *argv[])
     while (slavecount != slavecountrecieved || slavecount != slavecountfinished)
     {
 
-        puts("Waiting for incoming connections...");
+        printf("Waiting for incoming connections...");
         c = sizeof(struct sockaddr_in);
 
         // accept connection from an incoming client
@@ -72,11 +71,11 @@ int main(int argc, char *argv[])
 
         if (client_sock < 0)
         {
-            perror("accept failed");
+            printf("accept failed");
             return 1;
         }
 
-        puts("Connection accepted");
+        printf("Connection accepted");
 
         printf("Waiting for client request...\n");
         if (recv(client_sock, &clientStatus, sizeof(int), 0) < 0)

@@ -1,7 +1,4 @@
-// Client code in C to sort the array
 #include <arpa/inet.h>
-#include <stdio.h>
-#include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -20,23 +17,21 @@ int connectServer()
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == -1)
 	{
-		printf("Could not create socket");
+		printf("Could not create socket\n");
 		return -1;
 	}
-	puts("Socket created");
 
 	server.sin_addr.s_addr = inet_addr("127.0.0.1");
 	server.sin_family = AF_INET;
-	server.sin_port = htons(5600);
+	server.sin_port = htons(5050);
 
 	// Connect to remote server
 	if (connect(sock, (struct sockaddr *)&server, sizeof(server)) < 0)
 	{
-		perror("connect failed. Error");
 		return -1;
 	}
 
-	puts("Connected\n");
+	printf("Connected\n\n");
 	return sock;
 }
 
@@ -49,7 +44,7 @@ int main(int argc, char *argv[])
 	sock = connectServer();
 	if (sock == -1)
 	{
-		printf("Connection error");
+		printf("Connection error\n");
 		return -1;
 	}
 
@@ -57,7 +52,7 @@ int main(int argc, char *argv[])
 	clientStatus = 0;
 	if (send(sock, &clientStatus, sizeof(int), 0) < 0)
 	{
-		puts("Send status failed");
+		printf("Send status failed\n");
 		return 1;
 	}
 
@@ -65,18 +60,16 @@ int main(int argc, char *argv[])
 	int cornerMatrixInfo[3];
 	if (recv(sock, &cornerMatrixInfo, 3 * sizeof(int), 0) < 0)
 	{
-		puts("recv failed");
+		printf("recv failed\n");
 		return 0;
 	}
 	int nrow = cornerMatrixInfo[1] * 10 - 9;
 	int ncol = cornerMatrixInfo[2] * 10 - 9;
 
-	printf("%d", cornerMatrixInfo[0]);
-
 	clientStatus = 1;
 	if (send(sock, &clientStatus, sizeof(int), 0) < 0)
 	{
-		puts("Send status failed");
+		printf("Send status failed\n");
 		return 1;
 	}
 
@@ -84,11 +77,10 @@ int main(int argc, char *argv[])
 	// Receive a cornermatrix from the server
 	if (recv(sock, CORNERMATRIX, cornerMatrixInfo[0] * sizeof(float *), MSG_WAITALL) < 0)
 	{
-		puts("recv failed");
+		printf("recv failed\n");
 		return 0;
 	}
 
-	puts("Server reply :\n");
 	for (int i = 0; i < cornerMatrixInfo[0]; i++)
 	{
 		printf("%f ", CORNERMATRIX[i]);
@@ -98,7 +90,7 @@ int main(int argc, char *argv[])
 
 	// close the socket
 	close(sock);
-	printf("socket closed");
+	printf("Socket closed\n");
 
 	float **MATRIX;
 	generateMatrixFromCorners(CORNERMATRIX, nrow);
@@ -106,21 +98,21 @@ int main(int argc, char *argv[])
 	printMatrix(nrow);
 
 	sock = connectServer();
-	printf("connect again to server\n");
 	if (sock == -1)
 	{
-		printf("Connection error");
+		printf("Connection error\n");
 		return -1;
 	}
 
 	clientStatus = 2;
 	if (send(sock, &clientStatus, sizeof(int), 0) < 0)
 	{
-		puts("Send status failed");
+		printf("Send status failed\n");
 		return 1;
 	}
 
-	printf("Client finished.");
+	printf("Client sent status.\n");
+	printf("Client finished.\n");
 
 	return 0;
 }
