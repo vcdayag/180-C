@@ -7,19 +7,21 @@
 #include <stdlib.h>
 
 #include "interpolation.h"
+#include "distributed.h"
 
 #define MAX 11
-int main(int argc, char *argv[])
+
+int connectServer()
 {
 	int sock;
 	struct sockaddr_in server;
-	int datainfo[3] = {MAX, 0, 0};
 
 	// Create socket
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == -1)
 	{
 		printf("Could not create socket");
+		return -1;
 	}
 	puts("Socket created");
 
@@ -31,10 +33,33 @@ int main(int argc, char *argv[])
 	if (connect(sock, (struct sockaddr *)&server, sizeof(server)) < 0)
 	{
 		perror("connect failed. Error");
-		return 1;
+		return -1;
 	}
 
 	puts("Connected\n");
+	return sock;
+}
+
+int main(int argc, char *argv[])
+{
+	int sock;
+	int datainfo[3] = {MAX, 0, 0};
+	int clientStatus;
+
+	sock = connectServer();
+	if (sock == -1)
+	{
+		printf("Connection error");
+		return -1;
+	}
+
+	// STATUS: request corner matrix info
+	clientStatus = 0;
+	if (send(sock, &clientStatus, sizeof(int), 0) < 0)
+	{
+		puts("Send status failed");
+		return 1;
+	}
 
 	// Receive a reply from the server
 	int cornerMatrixInfo[3];
@@ -43,16 +68,15 @@ int main(int argc, char *argv[])
 		puts("recv failed");
 		return 0;
 	}
-
 	int nrow = cornerMatrixInfo[1] * 10 - 9;
 	int ncol = cornerMatrixInfo[2] * 10 - 9;
 
 	printf("%d", cornerMatrixInfo[0]);
 
-	puts("Server reply :\n");
-	if (send(sock, &datainfo, 3 * sizeof(int), 0) < 0)
+	clientStatus = 1;
+	if (send(sock, &clientStatus, sizeof(int), 0) < 0)
 	{
-		puts("Send failed");
+		puts("Send status failed");
 		return 1;
 	}
 
@@ -72,12 +96,31 @@ int main(int argc, char *argv[])
 
 	printf("\n");
 
+	// close the socket
+	close(sock);
+	printf("socket closed");
+
 	float **MATRIX;
 	generateMatrixFromCorners(CORNERMATRIX, nrow);
 	terrain_iter(nrow, ncol);
 	printMatrix(nrow);
 
-	// close the socket
-	close(sock);
+	sock = connectServer();
+	printf("connect again to server\n");
+	if (sock == -1)
+	{
+		printf("Connection error");
+		return -1;
+	}
+
+	clientStatus = 2;
+	if (send(sock, &clientStatus, sizeof(int), 0) < 0)
+	{
+		puts("Send status failed");
+		return 1;
+	}
+
+	printf("Client finished.");
+
 	return 0;
 }

@@ -9,6 +9,7 @@
 #include <stdlib.h>   // for malloc
 #include <sys/time.h> // for gettimeofday
 #include "interpolation.h"
+#include "distributed.h"
 
 int main(int argc, char *argv[])
 {
@@ -19,6 +20,7 @@ int main(int argc, char *argv[])
     int *inputlist;
 
     float *cornersList;
+    int clientStatus;
 
     // Create socket
     socket_desc = socket(AF_INET, SOCK_STREAM, 0);
@@ -58,8 +60,8 @@ int main(int argc, char *argv[])
 
     // listen to the socket
     listen(socket_desc, 3);
-    
-    while (slavecount != slavecountrecieved)
+
+    while (slavecount != slavecountrecieved || slavecount != slavecountfinished)
     {
 
         puts("Waiting for incoming connections...");
@@ -76,25 +78,48 @@ int main(int argc, char *argv[])
 
         puts("Connection accepted");
 
-        write(client_sock, &cornerMatrixInfo, 3 * sizeof(int));
-        recv(client_sock, &clientMessage, 3 * sizeof(int), 0);
-
-        cornersList = generateCornerMatrix(n);
-        for (size_t i = 0; i < cornerMatrixInfo[0]; i++)
+        printf("Waiting for client request...\n");
+        if (recv(client_sock, &clientStatus, sizeof(int), 0) < 0)
         {
-            printf("%f ", cornersList[i]);
+            printf("Error did not recieve response from client.");
+            return 1;
         }
-
-        write(client_sock, cornersList, cornerMatrixInfo[0] * sizeof(float *));
-        recv(client_sock, &clientMessage, 3 * sizeof(int), 0);
-
-        if (read_size == 0)
+        if (clientStatus == 0)
         {
-            puts("Client disconnected");
+            printf("Client wants data.\n");
+            printf("Sending data to client...\n");
+            write(client_sock, &cornerMatrixInfo, 3 * sizeof(int));
+            printf("corner matrix info sent.\n");
+
+            cornersList = generateCornerMatrix(n);
+            for (size_t i = 0; i < cornerMatrixInfo[0]; i++)
+            {
+                printf("%f ", cornersList[i]);
+            }
+
+            write(client_sock, cornersList, cornerMatrixInfo[0] * sizeof(float *));
+            printf("corner array sent.\n");
+
+            if (recv(client_sock, &clientStatus, sizeof(int), 0) < 0)
+            {
+                printf("Error did not recieve response from client.");
+                return 1;
+            }
+
+            if (clientStatus == 1)
+            {
+                printf("Client recieved data.\n");
+                slavecountrecieved += 1;
+            }
+            else
+            {
+                printf("Error wrong status: %d", clientStatus);
+            }
         }
-        else if (read_size == -1)
+        else if (clientStatus == 2)
         {
-            perror("recv failed");
+            printf("Client completed interpolation.\n");
+            slavecountfinished += 1;
         }
     }
 
