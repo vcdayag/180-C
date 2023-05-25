@@ -21,6 +21,13 @@ int main(int argc, char *argv[])
     float *cornersList;
     int clientStatus;
 
+    clientinfo *configinfoarray = readConfig();
+
+    for (int i = 0; i < 3; i++)
+    {
+        printf("%s %d\n", configinfoarray[i].ipaddress, configinfoarray[i].port);
+    }
+
     // Create socket
     socket_desc = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_desc == -1)
@@ -32,7 +39,7 @@ int main(int argc, char *argv[])
     // Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
-    server.sin_port = htons(5050);
+    server.sin_port = htons(5051);
 
     // Bind the socket
     if (bind(socket_desc, (struct sockaddr *)&server, sizeof(server)) < 0)
@@ -44,7 +51,7 @@ int main(int argc, char *argv[])
     }
     printf("bind done");
 
-    int n = 11;
+    int n = atoi(argv[1]);
     int cornerLengthRow = (int)(n / 10) + 1;
     int cornerLengthCol = (int)(n / 10) + 1;
     int cornerMatrixInfo[3] = {

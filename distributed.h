@@ -18,4 +18,12 @@ extern int cornerMatrxInfo[3];
 
 extern int clientStatus;
 
+typedef struct
+{
+    char *ipaddress;
+    int port;
+} clientinfo;
+
+clientinfo *readConfig();
+
 #endif /* DISTRIBUTEDH */

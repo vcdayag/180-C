@@ -41,6 +41,11 @@ compile-exer04:
 	gcc -c server.c
 	gcc -c client.c
 	gcc -c interpolation.c
-	gcc -o server server.o interpolation.o
-	gcc -o client client.o interpolation.o
+	gcc -c distributed.c
+	gcc -o server server.o interpolation.o distributed.o
+	gcc -o client client.o interpolation.o distributed.o
 	rm *.o
+
+distrib:
+	gcc distributed.c -o distributed
+	./distributed
