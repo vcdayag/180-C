@@ -122,5 +122,6 @@ int main(int argc, char *argv[])
         }
     }
 
+    close(socket_desc);
     return 0;
 }

@@ -8,7 +8,7 @@
 
 #define MAX 11
 
-int connectServer()
+int connectServer(char* ipadrress, int port)
 {
 	int sock;
 	struct sockaddr_in server;
@@ -21,9 +21,9 @@ int connectServer()
 		return -1;
 	}
 
-	server.sin_addr.s_addr = inet_addr("127.0.0.1");
+	server.sin_addr.s_addr = inet_addr(ipadrress);
 	server.sin_family = AF_INET;
-	server.sin_port = htons(5050);
+	server.sin_port = htons(port);
 
 	// Connect to remote server
 	if (connect(sock, (struct sockaddr *)&server, sizeof(server)) < 0)
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 	int datainfo[3] = {MAX, 0, 0};
 	int clientStatus;
 
-	sock = connectServer();
+	sock = connectServer(argv[1],atoi(argv[2]));
 	if (sock == -1)
 	{
 		printf("Connection error\n");
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 	terrain_iter(nrow, ncol);
 	printMatrix(nrow);
 
-	sock = connectServer();
+	sock = connectServer(argv[1],atoi(argv[2]));
 	if (sock == -1)
 	{
 		printf("Connection error\n");
