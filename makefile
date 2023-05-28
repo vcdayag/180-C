@@ -46,6 +46,12 @@ compile-exer04:
 	gcc -o client client.o interpolation.o distributed.o
 	rm *.o
 
+run-master: compile-exer04
+	./server 10
+
+run-master: compile-exer04
+	./client
+
 distrib:
 	gcc distributed.c -o distributed
 	./distributed
