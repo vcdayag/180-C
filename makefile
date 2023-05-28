@@ -50,7 +50,7 @@ run-master: compile-exer04
 	./server 10
 
 run-client: compile-exer04
-	./client
+	./client 5003
 
 distrib:
 	gcc distributed.c -o distributed
