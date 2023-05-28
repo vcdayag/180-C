@@ -49,7 +49,7 @@ compile-exer04:
 run-master: compile-exer04
 	./server 10
 
-run-master: compile-exer04
+run-client: compile-exer04
 	./client
 
 distrib:
