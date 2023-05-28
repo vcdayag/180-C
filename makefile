@@ -31,26 +31,26 @@ exer03: compile-exer03
 	rm ./interpolation-multithread
 
 
-compile-server:
-	gcc server.c -o server
+compile-master:
+	gcc master.c -o master
 
-compile-client:
-	gcc client.c -o client
+compile-slave:
+	gcc slave.c -o slave
 
 compile-exer04:
-	gcc -c server.c
-	gcc -c client.c
+	gcc -c master.c
+	gcc -c slave.c
 	gcc -c interpolation.c
 	gcc -c distributed.c
-	gcc -o server server.o interpolation.o distributed.o
-	gcc -o client client.o interpolation.o distributed.o
+	gcc -o master master.o interpolation.o distributed.o
+	gcc -o slave slave.o interpolation.o distributed.o
 	rm *.o
 
 run-master: compile-exer04
-	./server 10
+	./master 10
 
-run-client: compile-exer04
-	./client 5003
+run-slave: compile-exer04
+	./slave 5003
 
 distrib:
 	gcc distributed.c -o distributed
