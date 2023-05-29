@@ -31,16 +31,18 @@ int main(int argc, char *argv[])
     int slavecount = 2;
     int slavecountrecieved = 0;
     int slavecountfinished = 0;
-    // Create socket
-    client_sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (client_sock == -1)
-    {
-        printf("Could not create socket");
-    }
-    printf("Socket created\n");
 
+    struct timeval time_before, time_after;
+    gettimeofday(&time_before, 0);
     for (int i = 0; i < 3; i++)
     {
+        // Create socket
+        client_sock = socket(AF_INET, SOCK_STREAM, 0);
+        if (client_sock == -1)
+        {
+            printf("Could not create socket");
+        }
+        printf("Socket created\n");
 
         printf("%s\n", configinfoarray[i].ipaddress);
         printf("%d\n", configinfoarray[i].port);
@@ -87,6 +89,16 @@ int main(int argc, char *argv[])
         // }
     }
 
+    gettimeofday(&time_after, 0);
+    printf("completed all!");
+
+    long seconds = time_after.tv_sec - time_before.tv_sec;
+    long microseconds = time_after.tv_usec - time_before.tv_usec;
+    double time_elapsed = seconds + microseconds * 1e-6;
+
+    printf("Time elapsed: %f seconds.\n", time_elapsed);
+
     close(client_sock);
+
     return 0;
 }
