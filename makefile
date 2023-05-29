@@ -50,7 +50,7 @@ run-master: compile-exer04
 	./master 10
 
 run-slave: compile-exer04
-	./slave 5003
+	./slave 5050
 
 distrib:
 	gcc distributed.c -o distributed
