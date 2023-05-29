@@ -17,11 +17,11 @@ int main(int argc, char *argv[])
     int message[10], i;
     int clientMessage[3];
     int *inputlist;
-
     float *cornersList;
     int clientStatus;
 
     clientinfo *configinfoarray = readConfig();
+
     int n = atoi(argv[1]);
     int cornerLengthRow = (int)(n / 10) + 1;
     int cornerLengthCol = (int)(n / 10) + 1;
@@ -45,9 +45,12 @@ int main(int argc, char *argv[])
     for (int i = 0; i < 3; i++)
     {
 
-        slave.sin_addr.s_addr = inet_addr("127.0.0.1");
+        printf("%s\n", configinfoarray[i].ipaddress);
+        printf("%d\n", configinfoarray[i].port);
+
+        slave.sin_addr.s_addr = inet_addr(configinfoarray[i].ipaddress);
         slave.sin_family = AF_INET;
-        slave.sin_port = htons(5003);
+        slave.sin_port = htons(configinfoarray[i].port);
 
         // Connect to remote server
         if (connect(client_sock, (struct sockaddr *)&slave, sizeof(slave)) < 0)
