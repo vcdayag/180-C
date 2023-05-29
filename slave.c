@@ -43,6 +43,8 @@ int main(int argc, char *argv[])
 	int sock;
 	struct sockaddr_in server, master;
 
+	clientinfo *configinfoarray = readConfig();
+
 	// Create socket
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == -1)
@@ -52,9 +54,9 @@ int main(int argc, char *argv[])
 	}
 
 	// Prepare the sockaddr_in structure
-    server.sin_addr.s_addr = INADDR_ANY;
-    server.sin_family = AF_INET;
-    server.sin_port = htons(atoi(argv[1]));
+	server.sin_addr.s_addr = INADDR_ANY;
+	server.sin_family = AF_INET;
+	server.sin_port = htons(atoi(argv[1]));
 
 	// Bind the socket
 	if (bind(sock, (struct sockaddr *)&server, sizeof(server)) < 0)
