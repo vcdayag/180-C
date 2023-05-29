@@ -11,6 +11,8 @@ int main(int argc, char *argv[])
 	int sock, clientStatus;
 	struct sockaddr_in server, master;
 
+	printf("%d", atoi(argv[1]));
+
 	clientinfo *configinfoarray = readConfig();
 
 	// Create socket
