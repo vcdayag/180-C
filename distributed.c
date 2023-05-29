@@ -19,11 +19,9 @@ clientinfo *readConfig()
 
     for (int i = 0; i < slavecount; i++)
     {
-        char tempipaddress[15];
         int tempport;
-        fscanf(fptr, "%s %d", tempipaddress, &tempport);
+        fscanf(fptr, "%s %d", cinfoarray[i].ipaddress, &tempport);
         cinfoarray[i].port = tempport;
-        cinfoarray[i].ipaddress = tempipaddress;
     }
 
     fclose(fptr);

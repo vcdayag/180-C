@@ -20,7 +20,7 @@ extern int clientStatus;
 
 typedef struct
 {
-    char *ipaddress;
+    char ipaddress[16];
     int port;
 } clientinfo;
 
