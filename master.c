@@ -12,11 +12,8 @@
 
 int main(int argc, char *argv[])
 {
-    int client_sock, c, read_size;
-    struct sockaddr_in slave, client;
-    int message[10], i;
-    int clientMessage[3];
-    int *inputlist;
+    int client_sock;
+    struct sockaddr_in slave;
     float *cornersList;
     int clientStatus;
 
@@ -64,10 +61,6 @@ int main(int argc, char *argv[])
         printf("corner matrix info sent.\n");
 
         cornersList = generateCornerMatrix(n);
-        // for (size_t i = 0; i < cornerMatrixInfo[0]; i++)
-        // {
-        //     printf("%f ", cornersList[i]);
-        // }
 
         write(client_sock, cornersList, cornerMatrixInfo[0] * sizeof(float *));
         printf("corner array sent.\n");
@@ -93,6 +86,7 @@ int main(int argc, char *argv[])
         //     slavecountfinished += 1;
         // }
     }
+
     close(client_sock);
     return 0;
 }
