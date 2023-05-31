@@ -21,20 +21,13 @@ int main(int argc, char *argv[])
     int slave_count = getNConfigFile(argv[2]);
 
     int n = atoi(argv[1]);
-    int cornerLengthRow = (int)(n / 10) + 1;
-    int cornerLengthCol = (int)(n / 10) + 1;
-    int cornerMatrixInfo[3] = {
-        cornerLengthRow * cornerLengthRow, // total length
-        cornerLengthRow,                   // row length
-        cornerLengthCol,                   // column length
-    };
-
+    
     int slavecount = 2;
     int slavecountrecieved = 0;
     int slavecountfinished = 0;
 
-    int nperslave = (n-1) / slave_count;
-    if(nperslave*slave_count != (n-1)){
+    int nperslave = (n) / slave_count;
+    if(nperslave*slave_count != (n)){
         nperslave += 1;
     }
 
@@ -45,11 +38,19 @@ int main(int argc, char *argv[])
 
     int finalnperslave = chunkableperslave * 10 + 1;
 
+    int cornerLengthRow = (int)(finalnperslave / 10) + 1;
+    int cornerLengthCol = (int)(finalnperslave / 10) + 1;
+    int cornerMatrixInfo[3] = {
+        cornerLengthRow * cornerLengthRow, // total length
+        cornerLengthRow,                   // row length
+        cornerLengthCol,                   // column length
+    };
+
     cornersList = generateCornerMatrix(finalnperslave);
 
     struct timeval time_before, time_after;
     gettimeofday(&time_before, 0);
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < slave_count; i++)
     {
         // Create socket
         client_sock = socket(AF_INET, SOCK_STREAM, 0);
