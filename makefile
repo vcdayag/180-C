@@ -47,7 +47,7 @@ compile-exer04:
 	rm *.o
 
 run-master: compile-exer04
-	./master 10
+	./master 10 ./config_2
 
 run-slave: compile-exer04
 	./slave 5050
