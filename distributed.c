@@ -28,6 +28,20 @@ clientinfo *readConfig()
     return cinfoarray;
 }
 
+int getNConfig()
+{
+    FILE *fptr;
+    if ((fptr = fopen("./config", "r")) == NULL)
+    {
+        printf("Error opening file.");
+        exit(1);
+    }
+
+    int slavecount;
+
+    fscanf(fptr, "%d", &slavecount);
+    return slavecount;
+}
 // int main()
 // {
 //     readConfig();

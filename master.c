@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
     int clientStatus;
 
     clientinfo *configinfoarray = readConfig();
+    int slave_count = getNConfig();
 
     int n = atoi(argv[1]);
     int cornerLengthRow = (int)(n / 10) + 1;
@@ -31,6 +32,20 @@ int main(int argc, char *argv[])
     int slavecount = 2;
     int slavecountrecieved = 0;
     int slavecountfinished = 0;
+
+    int nperslave = (n-1) / slave_count;
+    if(nperslave*slave_count != (n-1)){
+        nperslave += 1;
+    }
+
+    int chunkableperslave = nperslave / 10;
+    if(chunkableperslave * 10 != nperslave){
+        chunkableperslave += 1;
+    }
+
+    int finalnperslave = chunkableperslave * 10 + 1;
+
+    cornersList = generateCornerMatrix(finalnperslave);
 
     struct timeval time_before, time_after;
     gettimeofday(&time_before, 0);
@@ -62,7 +77,7 @@ int main(int argc, char *argv[])
         write(client_sock, &cornerMatrixInfo, 3 * sizeof(int));
         printf("corner matrix info sent.\n");
 
-        cornersList = generateCornerMatrix(n);
+        
 
         write(client_sock, cornersList, cornerMatrixInfo[0] * sizeof(float *));
         printf("corner array sent.\n");

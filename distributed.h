@@ -25,5 +25,6 @@ typedef struct
 } clientinfo;
 
 clientinfo *readConfig();
+int getNConfig();
 
 #endif /* DISTRIBUTEDH */

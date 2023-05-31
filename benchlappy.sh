@@ -6,7 +6,7 @@ sleep 1
 for n in {5050..5052}
     do
     echo ${n}/tcp
-    sudo fuser -k ${n}/tcp &
+#     sudo fuser -k ${n}/tcp &
     sleep 1
     done
 
