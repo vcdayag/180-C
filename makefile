@@ -37,6 +37,8 @@ compile-master:
 compile-slave:
 	gcc slave.c -o slave
 
+exer04: compile-exer04
+
 compile-exer04:
 	gcc -c master.c
 	gcc -c slave.c

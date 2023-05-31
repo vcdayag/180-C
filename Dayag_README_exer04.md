@@ -1,4 +1,4 @@
-# Laboratory Exercise 03 Part 01
+# Laboratory Exercise 04 Part 01
 
 Van Paul Angelo C. Dayag | 2020-10106
 
@@ -49,4 +49,18 @@ or
 ```
 gcc -Iheaders/manual interpolation-multithread.c -pthread -o interpolation-multithread
 ./interpolation-multithread n t
+```
+
+### Exercise 3: Distributing Parts of a Matrix over Sockets:
+
+```
+make exer04
+```
+
+```
+./master n config_filename
+```
+
+```
+./slave port
 ```
