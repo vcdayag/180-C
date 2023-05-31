@@ -82,12 +82,12 @@ int main(int argc, char *argv[])
 			return 1;
 		}
 
-		for (int i = 0; i < cornerMatrixInfo[0]; i++)
-		{
-			printf("%f ", CORNERMATRIX[i]);
-		}
+		// for (int i = 0; i < cornerMatrixInfo[0]; i++)
+		// {
+		// 	printf("%f ", CORNERMATRIX[i]);
+		// }
 
-		printf("\n");
+		// printf("\n");
 
 		// close the socket
 		printf("Socket closed\n");
