@@ -17,8 +17,8 @@ int main(int argc, char *argv[])
     float *cornersList;
     int clientStatus;
 
-    clientinfo *configinfoarray = readConfig();
-    int slave_count = getNConfig();
+    clientinfo *configinfoarray = readConfigFile(argv[2]);
+    int slave_count = getNConfigFile(argv[2]);
 
     int n = atoi(argv[1]);
     int cornerLengthRow = (int)(n / 10) + 1;
