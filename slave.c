@@ -93,10 +93,10 @@ int main(int argc, char *argv[])
 		printf("Socket closed\n");
 
 		float **MATRIX;
-		generateMatrixFromCorners(CORNERMATRIX, nrow);
-		terrain_iter(nrow, ncol);
-		printMatrix(nrow);
-		printf("finished interpolation.\n");
+		// generateMatrixFromCorners(CORNERMATRIX, nrow);
+		// terrain_iter(nrow, ncol);
+		// printMatrix(nrow);
+		// printf("finished interpolation.\n");
 	}
 	close(sock);
 
