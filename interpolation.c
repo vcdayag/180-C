@@ -119,7 +119,7 @@ void terrain_iter(int nrow, int ncol)
             int B = MATRIX[LRPOINTrow][LRPOINTcol + 10];
             int C = MATRIX[LRPOINTrow + 10][LRPOINTcol];
             int D = MATRIX[LRPOINTrow + 10][LRPOINTcol + 10];
-            // printf("%d %d\n",LRPOINTrow,LRPOINTcol);
+            printf("%d %d %d %d\n",LRPOINTrow,row,LRPOINTcol,col);
             // printf("%d %d\n",LRPOINTrow+10,LRPOINTcol+10);
             // printf("%d %d %d\n",index,row,col);
             // printf("d%d c%d b%d a%d\n",WEIGHTS[index][0],WEIGHTS[index][1],WEIGHTS[index][2],WEIGHTS[index][3]);
