@@ -103,6 +103,10 @@ int main(int argc, char *argv[])
         //     printf("Client completed interpolation.\n");
         //     slavecountfinished += 1;
         // }
+        for (int i = 0; i < cornerMatrixInfo[0]; i++)
+		{
+			printf("%f\n", cornersList[i]);
+		}
     }
 
     gettimeofday(&time_after, 0);
