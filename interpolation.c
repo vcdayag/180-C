@@ -102,7 +102,7 @@ void terrain_iter(int nrow, int ncol)
                 if (row % 10 == 0)
                     continue;
             }
-            int index = row * 11 + col % 11;
+            int index = row/11 * 11 + col % 11;
             int d = WEIGHTS[index][0];
             int c = WEIGHTS[index][1];
             int b = WEIGHTS[index][2];
