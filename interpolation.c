@@ -103,16 +103,16 @@ void terrain_iter(int nrow, int ncol)
                     continue;
             }
             int index = row/11 * 11 + col % 11;
-            int d = WEIGHTS[index][0];
-            int c = WEIGHTS[index][1];
-            int b = WEIGHTS[index][2];
-            int a = WEIGHTS[index][3];
+            // int d = WEIGHTS[index][0];
+            // int c = WEIGHTS[index][1];
+            // int b = WEIGHTS[index][2];
+            // int a = WEIGHTS[index][3];
             // printf("{%d, %d, %d, %d},\n",d,c,b,a);
 
-            // int d = abs((row-LRPOINTrow)*(col - LRPOINTcol));
-            // int c = abs((LRPOINTrow-row)*(LRPOINTcol+10-col));
-            // int b = abs((LRPOINTrow+10-row)*(col - LRPOINTcol));
-            // int a = abs((LRPOINTrow+10-row)*(LRPOINTcol+10-col));
+            int d = abs((row-LRPOINTrow)*(col - LRPOINTcol));
+            int c = abs((LRPOINTrow-row)*(LRPOINTcol+10-col));
+            int b = abs((LRPOINTrow+10-row)*(col - LRPOINTcol));
+            int a = abs((LRPOINTrow+10-row)*(LRPOINTcol+10-col));
             // printf("{%d, %d, %d, %d}, ",d,c,b,a);
 
             int A = MATRIX[LRPOINTrow][LRPOINTcol];
